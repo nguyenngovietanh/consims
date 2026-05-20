@@ -15,18 +15,18 @@ const PAGE_CONTENT_MAP = {
 
 // ── Map tab dashboard ────────────────────────────────
 const DASH_TAB_MAP = {
-  "contract": { module: "modules/dashboard/contract-dashboard.html", hasCharts: true  },
-  "project":  { module: "modules/dashboard/project-dashboard.html",  hasCharts: false },
-  "company":  { module: "modules/dashboard/company-dashboard.html",  hasCharts: false },
+  "contract": { module: "modules/dashboard/contract-dashboard.html", hasCharts: true,  initFn: "initContractCharts" },
+  "project":  { module: "modules/dashboard/project-dashboard.html",  hasCharts: true,  initFn: "initProjectCharts"  },
+  "company":  { module: "modules/dashboard/company-dashboard.html",  hasCharts: false, initFn: null                 },
 };
 
 // ── Context topbar theo trang nav ───────────────────
 const NAV_CONTEXT = {
-  "contract.html":          { title: "Contract",          desc: "Quản lý và theo dõi hợp đồng" },
-  "submission-review.html": { title: "Submission Review", desc: "Xem xét và phê duyệt hồ sơ nộp" },
-  "payment.html":           { title: "Payment",           desc: "Quản lý thanh toán và hóa đơn" },
-  "help.html":              { title: "Trợ giúp",          desc: "Hướng dẫn sử dụng và hỗ trợ" },
-  "settings.html":          { title: "Cài đặt",           desc: "Tùy chỉnh ứng dụng và tài khoản" },
+  "contract.html":          { title: "Contract",          desc: "Contract Administration & Tracking" },
+  "submission-review.html": { title: "Submission Review", desc: "Submission Review & Approval" },
+  "payment.html":           { title: "Payment",           desc: "Payment Management & Invoicing" },
+  "help.html":              { title: "Help",              desc: "Usage Guides & Support" },
+  "settings.html":          { title: "Settings",          desc: "Application & Account Customization" },
 };
 
 // ── Context topbar theo dashboard tab ───────────────
@@ -193,7 +193,8 @@ async function switchDashTab(tab) {
 
   if (config?.hasCharts) {
     rerunScripts(contentEl);
-    if (typeof initContractCharts === "function") initContractCharts();
+    const fn = config.initFn && window[config.initFn];
+    if (typeof fn === "function") fn();
   }
 
   progressDone();
@@ -270,3 +271,28 @@ window.addEventListener("popstate", e => {
 });
 
 document.addEventListener("DOMContentLoaded", initShell);
+
+
+function progressBar(percent, status) {
+  const colors = {
+    completed: '#22c55e',  // xanh
+    delayed:   '#ef4444',  // đỏ
+    atrisk:    '#f97316',  // cam
+    inactive:  '#d1d5db',  // xám
+    ontrack:   '#22c55e',  // xanh
+  };
+  const color = colors[status] || '#3b82f6';
+  return `
+    <div style="background:#e5e7eb; border-radius:3px; height:10px; min-width:80px;">
+      <div style="background:${color}; height:100%; border-radius:3px; width:${percent}%;"></div>
+    </div>`;
+
+  row.innerHTML = `
+    <td>${item.riskTitle}</td>
+    <td>${item.baselineDate}</td>
+    <td>${item.plannedDate}</td>
+    <td>${item.forecastDate}</td>
+    <td>${item.status}</td>
+    <td>${progressBar(item.progress, item.statusKey)}</td>
+  `;
+}

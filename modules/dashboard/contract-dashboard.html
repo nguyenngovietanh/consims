@@ -91,7 +91,7 @@ tailwind.config = {
   .act-tbl tr:hover td { background:#f6f8fb; }
 
   /* Scrollable main */
-  .main-scroll { overflow-y:auto; margin: 16px 24px; border-radius: 8px;}
+  .main-scroll { overflow-y:auto; margin: 16px 24px;}
   thead {border-bottom: 1px solid #00000010; font-weight: bold; color: #3B3B3B;}
 </style>
 </head>
@@ -99,24 +99,24 @@ tailwind.config = {
     <div class="contract-dashboard main-scroll">
         <!-- Filter bar -->
         <div class="flex items-center gap-4 flex-shrink-0 relative overflow-hidden" style="margin: 0 0 16px 0; height: 32px;">
-        <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
-            <select class="flt-select w-full"><option>All Projects</option><option>HĐ-2024-001</option><option>HĐ-2024-015</option></select>
-        </div>
-        <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
-            <select class="flt-select w-full"><option>All Clients</option></select>
-        </div>
-        <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
-            <select class="flt-select w-full"><option>All PMs</option></select>
-        </div>
-        <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
-            <select class="flt-select w-full"><option>All Types</option><option>Main Contract</option><option>Subcontract</option><option>Supplier Contract</option><option>Other Contract</option></select>
-        </div>
-        <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
-            <select class="flt-select w-full"><option>All Status</option><option>In-Progress</option><option>Approved</option><option>Cond-Approved</option><option>Rejected</option><option>Done</option></select>
-        </div>
-        <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
-            <select class="flt-select w-full"><option>May 2026</option><option>Apr 2026</option><option>Mar 2026</option></select>
-        </div>
+            <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
+                <select class="flt-select w-full"><option>All Projects</option><option>HĐ-2024-001</option><option>HĐ-2024-015</option></select>
+            </div>
+            <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
+                <select class="flt-select w-full"><option>All Clients</option></select>
+            </div>
+            <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
+                <select class="flt-select w-full"><option>All PMs</option></select>
+            </div>
+            <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
+                <select class="flt-select w-full"><option>All Types</option><option>Main Contract</option><option>Subcontract</option><option>Supplier Contract</option><option>Other Contract</option></select>
+            </div>
+            <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
+                <select class="flt-select w-full"><option>All Status</option><option>In-Progress</option><option>Approved</option><option>Cond-Approved</option><option>Rejected</option><option>Done</option></select>
+            </div>
+            <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
+                <select class="flt-select w-full"><option>May 2026</option><option>Apr 2026</option><option>Mar 2026</option></select>
+            </div>
         </div>
         
         <!-- KPI Metric strip -->
@@ -159,11 +159,6 @@ tailwind.config = {
             <div class="metric-sub mt-2 flex justify-center" style="color: #3B3B3B;"><span style="color: red;">-1.2% &nbsp;</span> of RCV</div>
             </div>
             <div class="metric-col">
-            <div class="metric-label">Forecast (To date)</div>
-            <div class="metric-val w-full flex justify-center">0</div>
-            <div class="metric-sub mt-2 flex justify-center" style="color: #3B3B3B;"><span>16% &nbsp;</span> of RCV</div>
-            </div>
-            <div class="metric-col">
             <div class="metric-label">Cash Collected (To date)</div>
             <div class="metric-val w-full flex justify-center">0</div>
             </div>
@@ -176,34 +171,34 @@ tailwind.config = {
 
         <!-- ── Section 1: Finance Performance ── -->
         <div class="bg-white rounded border border-gray-200 overflow-hidden" style="border-radius: 12px; margin-bottom: 16px;">
-        <div class="sec-hdr">1. Finance Performance</div>
-        <div class="section-content grid grid-cols-2 gap-4">
-            <!-- Left: table -->
-            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
-            <table class="dash-tbl">
-                <thead><tr><th>Description</th><th>Amount</th><th>% of RCV</th></tr></thead>
-                <tbody>
-                <tr><td>Original Contract Value</td><td>$52,600,000</td><td>100%</td></tr>
-                <tr><td>Approved Variations</td><td>$52,600,000</td><td>100%</td></tr>
-                <tr><td>Pending Variations</td><td>$52,600,000</td><td>100%</td></tr>
-                <tr><td>Revised Contract Value</td><td>$52,600,000</td><td>100%</td></tr>
-                <tr><td>Revenue Recognised (To date)</td><td>$52,600,000</td><td>100%</td></tr>
-                <tr><td>Cost Incurred (To date)</td><td>$52,600,000</td><td>100%</td></tr>
-                <tr><td>Forecast Final Cost (EAC)</td><td>$52,600,000</td><td>100%</td></tr>
-                <tr><td>Forecast Profit</td><td>$52,600,000</td><td>100%</td></tr>
-                <tr><td>Tender Margin</td><td>$52,600,000</td><td>100%</td></tr>
-                <tr><td>Forecast Profit</td><td>$52,600,000</td><td>100%</td></tr>
-                </tbody>
-            </table>
+            <div class="sec-hdr">1. Finance Performance</div>
+            <div class="section-content grid grid-cols-2 gap-4">
+                <!-- Left: table -->
+                <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+                    <table class="dash-tbl">
+                        <thead><tr><th>Description</th><th>Amount</th><th>% of RCV</th></tr></thead>
+                        <tbody>
+                        <tr><td>Original Contract Value</td><td>$52,600,000</td><td>100%</td></tr>
+                        <tr><td>Approved Variations</td><td>$52,600,000</td><td>100%</td></tr>
+                        <tr><td>Pending Variations</td><td>$52,600,000</td><td>100%</td></tr>
+                        <tr><td>Revised Contract Value</td><td>$52,600,000</td><td>100%</td></tr>
+                        <tr><td>Revenue Recognised (To date)</td><td>$52,600,000</td><td>100%</td></tr>
+                        <tr><td>Cost Incurred (To date)</td><td>$52,600,000</td><td>100%</td></tr>
+                        <tr><td>Forecast Final Cost (EAC)</td><td>$52,600,000</td><td>100%</td></tr>
+                        <tr><td>Forecast Profit</td><td>$52,600,000</td><td>100%</td></tr>
+                        <tr><td>Tender Margin</td><td>$52,600,000</td><td>100%</td></tr>
+                        <tr><td>Forecast Profit</td><td>$52,600,000</td><td>100%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Right: line chart -->
+                <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+                    <div class="font-bold mb-2" style="font-size: 12px; color: #1E2B58; padding: 0 0 8px 0;">Revenue vs Cost (Cumulative)</div>
+                    <div class="chart-wrap" style="height:330px;">
+                        <canvas id="financeChart"></canvas>
+                    </div>
+                </div>
             </div>
-            <!-- Right: line chart -->
-            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
-            <div class="font-bold mb-2" style="font-size: 12px; color: #1E2B58; padding: 0 0 8px 0;">Revenue vs Cost (Cumulative)</div>
-            <div class="chart-wrap" style="height:330px;">
-                <canvas id="financeChart"></canvas>
-            </div>
-            </div>
-        </div>
         </div>
 
         <!-- ── Section 2: Progress & Time Performance ── -->
