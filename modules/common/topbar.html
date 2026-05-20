@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>consIMS — Contract Dashboard</title>
+<link rel="stylesheet" href="./styles/styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy: { DEFAULT:'#0f1f3d', 50:'#e8edf5', 100:'#c5d0e3', 200:'#8fa5c9', 300:'#5a7aaf', 400:'#2f5591', 500:'#0f1f3d', 600:'#0c1a33', 700:'#091428', 800:'#060e1c', 900:'#030810' },
+        brand: '#1a3a6b',
+      },
+      fontSize: { '2xs': '10px', xs: '11px', sm: '12px', base: '13px' },
+    }
+  }
+}
+</script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:'Nunito Sans', sans-serif; background:#F9F9FA; }
+  ::-webkit-scrollbar { width:5px; height:5px; }
+  ::-webkit-scrollbar-track { background:#F9F9FA; }
+  ::-webkit-scrollbar-thumb { background:#F9F9FA; border-radius:3px; }
+
+  /* Chart containers */
+  .chart-wrap { position:relative; }
+
+  /* Section header */
+  .sec-hdr { background:#1a3a6b; color:#fff; font-size:14px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; padding:6px 12px; border-radius:4px 4px 0 0; }
+  .section-content { padding: 16px;}
+  
+  /* Compact table */
+  .dash-tbl { width:100%; font-size:12px; }
+  .dash-tbl th {color:#3B3B3B; font-weight:700; padding:8px; text-align:left; font-size: 12px; letter-spacing:.5px; white-space:nowrap; }
+  .dash-tbl td { padding:8px; color:#2d3f56; font-size:12px; }
+  .dash-tbl tr:nth-child(even) td { background:#f6f8fb; }
+  .dash-tbl tr:hover td { background:#edf1f8; }
+
+  /* Donut chart */
+  .donut-legend { display:flex; flex-direction:column; gap:4px; }
+  .donut-legend-item { display:flex; align-items:center; gap:5px; font-size:10px; color:#4a6080; }
+  .donut-legend-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+  /* Risk heatmap */
+  .risk-cell { display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; border-radius:4px; height:48px; }
+
+  /* Sidebar nav */
+  .nav-item { display:flex; align-items:center; gap: 8px; color: #1E2B58; padding: 12px 8px; margin-bottom: 12px; cursor:pointer; font-size:14px; transition:all .12s; border-radius: 8px;}
+  .nav-item:hover { background:rgba(30, 43, 88, .1); }
+  .nav-item.active { background:rgba(30, 43, 88, .15); font-weight: 700;}
+  .nav-section { font-size:14px; font-weight:400; color:#AAAAAA; padding:4px 0 4px 0; margin: 8px 0 0 0; }
+
+  /* Tabs */
+  .tab-btn { padding:8px 16px; font-size: 14px; font-weight:600; color:#6b7280; cursor:pointer; border-bottom:2px solid transparent; transition:all .12s; white-space:nowrap; }
+  .tab-btn.active { color:#1a3a6b; border-bottom-color:#1a3a6b; }
+  .tab-btn:hover:not(.active) { color:#374151; }
+
+  /* Filter bar */
+  .flt-select { font-size:14px; padding: 4px; background:#fff; color:#AAAAAA; outline:none; height:28px; width: 100%; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+  background-repeat: no-repeat; background-position: right 4px center; padding-right: 20px;}
+
+  /* Metric row (top KPI bar) */
+  .metric-col { flex:1; min-width:0; border-right: 1px solid #7EB876;}
+  .metric-col:last-child { border-right:none; }
+  .metric-label { font-size:11px; text-align: center; height: 48px; background: #28A745; color:#ffffff; text-transform:uppercase; font-weight:600; line-height:1.2; margin-bottom:4px; padding: 4px 8px; display: flex; align-items: center; justify-content: center;}
+  .metric-val { font-size:24px; font-weight:800; color:#F26314; line-height:1; margin-top: 12px;}
+  .metric-sub { font-size:14px; color:rgba(255,255,255,.5); margin: 4px 0 16px 0; }
+  .metric-sub span { font-weight: 600; color: #28A745; }
+
+  /* Progress bar */
+  .pbar { height:5px; background:#e2e8f0; border-radius:3px; overflow:hidden; }
+  .pbar-fill { height:100%; border-radius:3px; }
+
+  /* Compliance checks */
+  .check-row { display:flex; align-items:center; justify-content:space-between; padding:5px 0; border-bottom:1px solid #f0f3f8; font-size:12px; }
+  .check-row:last-child { border-bottom:none; }
+  .check-row img { width:16px; height:16px; }
+
+  /* Activity table */
+  .act-tbl { width:100%; border-collapse:collapse; font-size:12px; }
+  .act-tbl th { background:#E8EDF5; color:#4a6080; font-weight:700; padding:5px 8px; text-align:left; border:1px solid #d4dce9; font-size:10px; }
+  .act-tbl td { padding:4px 8px; border-bottom:1px solid #f0f3f8; color:#2d3f56; }
+  .act-tbl tr:hover td { background:#f6f8fb; }
+
+  /* Scrollable main */
+  .main-scroll { overflow-y:auto; margin: 16px 24px; border-radius: 8px;}
+  thead {border-bottom: 1px solid #00000010; font-weight: bold; color: #3B3B3B;}
+</style>
+</head>
+<body class="flex h-screen overflow-hidden">
+    <div class="bg-white border-b border-gray-200 flex items-center gap-4 flex-shrink-0" style="padding: 16px 24px;">
+        <div class="flex-1 min-w-0">
+        <div class="font-bold" style="color: #1E2B58; font-size: 20px;">Contract Dashboard</div>
+        <div style="color: #8C98C2; font-size: 14px;">Real-time overview of project performance and health.</div>
+        </div>
+        <!-- Search -->
+        <div class="flex items-center" style="width: 243px; gap: 4px; padding: 8px 4px; justify-content: start; align-items: center; border-radius: 8px; border: 1px solid rgba(0, 0, 0, 0.10); background: var(--secondary-neutral-colors-card, #FFF);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15.3333 15.3333L18 18M6 11.3333C6 12.7478 6.5619 14.1044 7.5621 15.1046C8.56229 16.1048 9.91885 16.6667 11.3333 16.6667C12.7478 16.6667 14.1044 16.1048 15.1046 15.1046C16.1048 14.1044 16.6667 12.7478 16.6667 11.3333C16.6667 9.91885 16.1048 8.56229 15.1046 7.5621C14.1044 6.5619 12.7478 6 11.3333 6C9.91885 6 8.56229 6.5619 7.5621 7.5621C6.5619 8.56229 6 9.91885 6 11.3333Z" stroke="#AAAAAA" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <input class="bg-transparent" placeholder="Search..." style="font-size: 14px; outline: none;">
+        </div>
+        <!-- Bell -->
+        <button class="rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors relative" style="width: 40px; height: 40px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M21.6601 17.1816C21.1181 16.248 20.3125 13.6064 20.3125 10.1562C20.3125 8.08425 19.4894 6.09711 18.0242 4.63198C16.5591 3.16685 14.572 2.34375 12.5 2.34375C10.428 2.34375 8.44082 3.16685 6.9757 4.63198C5.51057 6.09711 4.68747 8.08425 4.68747 10.1562C4.68747 13.6074 3.88083 16.248 3.33883 17.1816C3.20043 17.419 3.12705 17.6886 3.12611 17.9634C3.12516 18.2381 3.19669 18.5083 3.33346 18.7466C3.47024 18.9849 3.66743 19.1829 3.90515 19.3206C4.14287 19.4584 4.41271 19.5311 4.68747 19.5312H8.67282C8.85306 20.4132 9.33241 21.2059 10.0298 21.7752C10.7272 22.3444 11.5997 22.6554 12.5 22.6554C13.4002 22.6554 14.2728 22.3444 14.9701 21.7752C15.6675 21.2059 16.1469 20.4132 16.3271 19.5312H20.3125C20.5871 19.5309 20.8569 19.4581 21.0944 19.3203C21.332 19.1824 21.5291 18.9844 21.6657 18.7462C21.8024 18.5079 21.8738 18.2378 21.8729 17.9631C21.8719 17.6885 21.7985 17.4189 21.6601 17.1816ZM12.5 21.0938C12.0154 21.0936 11.5428 20.9433 11.1472 20.6635C10.7516 20.3836 10.4525 19.9881 10.291 19.5312H14.709C14.5474 19.9881 14.2483 20.3836 13.8527 20.6635C13.4571 20.9433 12.9845 21.0936 12.5 21.0938ZM4.68747 17.9688C5.43942 16.6758 6.24997 13.6797 6.24997 10.1562C6.24997 8.49865 6.90845 6.90894 8.08055 5.73683C9.25265 4.56473 10.8424 3.90625 12.5 3.90625C14.1576 3.90625 15.7473 4.56473 16.9194 5.73683C18.0915 6.90894 18.75 8.49865 18.75 10.1562C18.75 13.6768 19.5586 16.6729 20.3125 17.9688H4.68747Z" fill="#1E2B58"/>
+        </svg>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+        </button>
+        <!-- Avatar -->
+        <div class="rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold cursor-pointer" style="width: 40px; height: auto;">
+        <img src="assets/img/avatar.png" style="width: 100%; height: auto;" alt="">
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>consIMS — Contract Dashboard</title>
+<link rel="stylesheet" href="./styles/styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy: { DEFAULT:'#0f1f3d', 50:'#e8edf5', 100:'#c5d0e3', 200:'#8fa5c9', 300:'#5a7aaf', 400:'#2f5591', 500:'#0f1f3d', 600:'#0c1a33', 700:'#091428', 800:'#060e1c', 900:'#030810' },
+        brand: '#1a3a6b',
+      },
+      fontSize: { '2xs': '10px', xs: '11px', sm: '12px', base: '13px' },
+    }
+  }
+}
+</script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:'Nunito Sans', sans-serif; background:#F9F9FA; }
+  ::-webkit-scrollbar { width:5px; height:5px; }
+  ::-webkit-scrollbar-track { background:#F9F9FA; }
+  ::-webkit-scrollbar-thumb { background:#F9F9FA; border-radius:3px; }
+  html, body { scroll-behavior: smooth; }
+
+  /* Chart containers */
+  .chart-wrap { position:relative; }
+
+  /* Section header */
+  .sec-hdr { background:#1a3a6b; color:#fff; font-size:14px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; padding:6px 12px; border-radius:4px 4px 0 0; }
+  .section-content { padding: 16px;}
+  
+  /* Compact table */
+  .dash-tbl { width:100%; font-size:12px; }
+  .dash-tbl th {color:#3B3B3B; font-weight:700; padding:8px; text-align:left; font-size: 12px; letter-spacing:.5px; white-space:nowrap; }
+  .dash-tbl td { padding:8px; color:#2d3f56; font-size:12px; }
+  .dash-tbl tr:nth-child(even) td { background:#f6f8fb; }
+  .dash-tbl tr:hover td { background:#edf1f8; }
+
+  /* Donut chart */
+  .donut-legend { display:flex; flex-direction:column; gap:4px; }
+  .donut-legend-item { display:flex; align-items:center; gap:5px; font-size:10px; color:#4a6080; }
+  .donut-legend-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+  /* Risk heatmap */
+  .risk-cell { display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; border-radius:4px; height:48px; }
+
+  /* Sidebar nav */
+  .nav-item { display:flex; align-items:center; gap: 8px; color: #1E2B58; padding: 12px 8px; margin-bottom: 12px; cursor:pointer; font-size:14px; transition:all .12s; border-radius: 8px;}
+  .nav-item:hover { background:rgba(30, 43, 88, .1); }
+  .nav-item.active { background:rgba(30, 43, 88, .15); font-weight: 700;}
+  .nav-section { font-size:14px; font-weight:400; color:#AAAAAA; padding:4px 0 4px 0; margin: 8px 0 0 0; }
+
+  /* Tabs */
+  .tab-btn { padding:8px 16px; font-size: 14px; font-weight:600; color:#6b7280; cursor:pointer; border-bottom:2px solid transparent; transition:all .12s; white-space:nowrap; }
+  .tab-btn.active { color:#1a3a6b; border-bottom-color:#1a3a6b; }
+  .tab-btn:hover:not(.active) { color:#374151; }
+
+  /* Filter bar */
+  .flt-select { font-size:14px; padding: 4px; background:#fff; color:#AAAAAA; outline:none; height:28px; width: 100%; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+  background-repeat: no-repeat; background-position: right 4px center; padding-right: 20px;}
+
+  /* Metric row (top KPI bar) */
+  .metric-col { flex:1; min-width:0; border-right: 1px solid #7EB876;}
+  .metric-col:last-child { border-right:none; }
+  .metric-label { font-size:11px; text-align: center; height: 48px; background: #28A745; color:#ffffff; text-transform:uppercase; font-weight:600; line-height:1.2; margin-bottom:4px; padding: 4px 8px; display: flex; align-items: center; justify-content: center;}
+  .metric-val { font-size:24px; font-weight:800; color:#F26314; line-height:1; margin-top: 12px;}
+  .metric-sub { font-size:14px; color:rgba(255,255,255,.5); margin: 4px 0 16px 0; }
+  .metric-sub span { font-weight: 600; color: #28A745; }
+
+  /* Progress bar */
+  .pbar { height:5px; background:#e2e8f0; border-radius:3px; overflow:hidden; }
+  .pbar-fill { height:100%; border-radius:3px; }
+
+  /* Compliance checks */
+  .check-row { display:flex; align-items:center; justify-content:space-between; padding:5px 0; border-bottom:1px solid #f0f3f8; font-size:12px; }
+  .check-row:last-child { border-bottom:none; }
+  .check-row img { width:16px; height:16px; }
+
+  /* Activity table */
+  .act-tbl { width:100%; border-collapse:collapse; font-size:12px; }
+  .act-tbl th { background:#E8EDF5; color:#4a6080; font-weight:700; padding:5px 8px; text-align:left; border:1px solid #d4dce9; font-size:10px; }
+  .act-tbl td { padding:4px 8px; border-bottom:1px solid #f0f3f8; color:#2d3f56; }
+  .act-tbl tr:hover td { background:#f6f8fb; }
+
+  /* Scrollable main */
+  .main-scroll { overflow-y:auto; margin: 16px 24px; border-radius: 8px;}
+  thead {border-bottom: 1px solid #00000010; font-weight: bold; color: #3B3B3B;}
+</style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+<!-- ══════════════════ SIDEBAR ══════════════════ -->
+<div id="sidebar-container" class="flex-shrink-0"></div>
+
+<!-- ══════════════════ MAIN ══════════════════ -->
+<div class="flex flex-col flex-1 min-w-0 h-full overflow-hidden" style="background: #F9F9FA;">
+
+  <!-- Topbar -->
+  <div id="topbar-container" class="flex-shrink-0"></div>
+
+  <!-- Dashboard tabs -->
+  <div id="dashboard-tabs" class="flex-shrink-0"></div>
+
+
+  <!-- Scrollable content -->
+  <div id="contract-dashboard" class="overflow-y-auto"></div>
+  <!-- end main-scroll -->
+</div><!-- end main -->
+
+<script>
+// ── Tab switching ──────────────────────────────────
+function switchDashTab(el, tab) {
+  document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+<script src="assets/js/contract-dashboard.js"></script>
+<script src="assets/js/main.js"></script>
+
+<script>
+  fetch('modules/common/sidebar.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('sidebar-container').innerHTML = data;
+      if (typeof initSidebarNav === 'function') initSidebarNav();
+    })
+    .catch(error => console.error('Lỗi tải sidebar:', error));
+
+  fetch('modules/common/topbar.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('topbar-container').innerHTML = data;
+    })
+    .catch(error => console.error('Lỗi tải topbar:', error));
+
+  fetch('modules/dashboard/dashboard-tabs.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('dashboard-tabs').innerHTML = data;
+    })
+    .catch(error => console.error('Lỗi tải dashboard tabs:', error));
+
+  fetch('modules/dashboard/contract-dashboard.html')
+    .then(response => response.text())
+    .then(htmlData => {
+        document.getElementById('contract-dashboard').innerHTML = htmlData;
+        
+        if (typeof initContractCharts === 'function') {
+            initContractCharts();
+        }
+    })
+    .catch(error => console.error('Lỗi khi tải Dashboard:', error));
+</script>
+</body>
+</html>

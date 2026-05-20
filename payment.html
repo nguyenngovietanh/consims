@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>consIMS — Payment</title>
+<link rel="stylesheet" href="./styles/styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy: { DEFAULT:"#0f1f3d", 50:"#e8edf5", 100:"#c5d0e3", 200:"#8fa5c9", 300:"#5a7aaf", 400:"#2f5591", 500:"#0f1f3d", 600:"#0c1a33", 700:"#091428", 800:"#060e1c", 900:"#030810" },
+        brand: "#1a3a6b",
+      },
+      fontSize: { "2xs": "10px", xs: "11px", sm: "12px", base: "13px" },
+    }
+  }
+}
+</script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"Nunito Sans", sans-serif; background:#F9F9FA; }
+  ::-webkit-scrollbar { width:5px; height:5px; }
+  ::-webkit-scrollbar-track { background:#F9F9FA; }
+  ::-webkit-scrollbar-thumb { background:#c5d0e3; border-radius:3px; }
+  .nav-item { display:flex; align-items:center; gap:8px; color:#1E2B58; padding:12px 8px; margin-bottom:12px; cursor:pointer; font-size:14px; transition:all .12s; border-radius:8px; }
+  .nav-item:hover { background:rgba(30,43,88,.1); }
+  .nav-item.active { background:rgba(30,43,88,.15); font-weight:700; }
+  .nav-section { font-size:14px; font-weight:400; color:#AAAAAA; padding:4px 0; margin:8px 0 0 0; }
+  .nav-item .icon-outline { display:block; }
+  .nav-item .icon-filled { display:none; }
+  .nav-item:hover .icon-outline, .nav-item.active .icon-outline { display:none; }
+  .nav-item:hover .icon-filled, .nav-item.active .icon-filled { display:block; }
+  .sec-hdr { background:#1a3a6b; color:#fff; font-size:14px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; padding:6px 12px; border-radius:4px 4px 0 0; }
+</style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+<!-- SIDEBAR -->
+<div id="sidebar-container" class="flex-shrink-0"></div>
+
+<!-- MAIN -->
+<div class="flex flex-col flex-1 min-w-0 h-full overflow-hidden" style="background:#F9F9FA;">
+
+  <!-- Topbar -->
+  <div id="topbar-container" class="flex-shrink-0"></div>
+
+  <!-- Content -->
+  <div class="overflow-y-auto flex-1 p-6">
+    <div class="sec-hdr mb-4">Payment</div>
+    <div class="bg-white rounded-lg p-8 text-center text-gray-400" style="font-size:14px;">
+      <div style="font-size:48px; margin-bottom:16px;">💳</div>
+      <div style="font-size:18px; font-weight:700; color:#1a3a6b; margin-bottom:8px;">Payment</div>
+      <div>Trang này đang được phát triển.</div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/main.js"></script>
+<script>
+  fetch("modules/common/sidebar.html")
+    .then(r => r.text())
+    .then(data => {
+      document.getElementById("sidebar-container").innerHTML = data;
+      if (typeof initSidebarNav === "function") initSidebarNav();
+    })
+    .catch(e => console.error("Lỗi tải sidebar:", e));
+
+  fetch("modules/common/topbar.html")
+    .then(r => r.text())
+    .then(data => { document.getElementById("topbar-container").innerHTML = data; })
+    .catch(e => console.error("Lỗi tải topbar:", e));
+</script>
+</body>
+</html>

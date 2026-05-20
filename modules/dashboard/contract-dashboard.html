@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>consIMS — Contract Dashboard</title>
+<link rel="stylesheet" href="./styles/styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy: { DEFAULT:'#0f1f3d', 50:'#e8edf5', 100:'#c5d0e3', 200:'#8fa5c9', 300:'#5a7aaf', 400:'#2f5591', 500:'#0f1f3d', 600:'#0c1a33', 700:'#091428', 800:'#060e1c', 900:'#030810' },
+        brand: '#1a3a6b',
+      },
+      fontSize: { '2xs': '10px', xs: '11px', sm: '12px', base: '13px' },
+    }
+  }
+}
+</script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:'Nunito Sans', sans-serif; background:#F9F9FA; }
+  ::-webkit-scrollbar { width:5px; height:5px; }
+  ::-webkit-scrollbar-track { background:#F9F9FA; }
+  ::-webkit-scrollbar-thumb { background:#F9F9FA; border-radius:3px; }
+
+  /* Chart containers */
+  .chart-wrap { position:relative; }
+
+  /* Section header */
+  .sec-hdr { background:#1a3a6b; color:#fff; font-size:14px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; padding:6px 12px; border-radius:4px 4px 0 0; }
+  .section-content { padding: 16px;}
+  
+  /* Compact table */
+  .dash-tbl { width:100%; font-size:12px; }
+  .dash-tbl th {color:#3B3B3B; font-weight:700; padding:8px; text-align:left; font-size: 12px; letter-spacing:.5px; white-space:nowrap; }
+  .dash-tbl td { padding:8px; color:#2d3f56; font-size:12px; }
+  .dash-tbl tr:nth-child(even) td { background:#f6f8fb; }
+  .dash-tbl tr:hover td { background:#edf1f8; }
+
+  /* Donut chart */
+  .donut-legend { display:flex; flex-direction:column; gap:4px; }
+  .donut-legend-item { display:flex; align-items:center; gap:5px; font-size:10px; color:#4a6080; }
+  .donut-legend-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+  /* Risk heatmap */
+  .risk-cell { display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; border-radius:4px; height:48px; }
+
+  /* Sidebar nav */
+  .nav-item { display:flex; align-items:center; gap: 8px; color: #1E2B58; padding: 12px 8px; margin-bottom: 12px; cursor:pointer; font-size:14px; transition:all .12s; border-radius: 8px;}
+  .nav-item:hover { background:rgba(30, 43, 88, .1); }
+  .nav-item.active { background:rgba(30, 43, 88, .15); font-weight: 700;}
+  .nav-section { font-size:14px; font-weight:400; color:#AAAAAA; padding:4px 0 4px 0; margin: 8px 0 0 0; }
+
+  /* Tabs */
+  .tab-btn { padding:8px 16px; font-size: 14px; font-weight:600; color:#6b7280; cursor:pointer; border-bottom:2px solid transparent; transition:all .12s; white-space:nowrap; }
+  .tab-btn.active { color:#1a3a6b; border-bottom-color:#1a3a6b; }
+  .tab-btn:hover:not(.active) { color:#374151; }
+
+  /* Filter bar */
+  .flt-select { font-size:14px; padding: 4px; background:#fff; color:#AAAAAA; outline:none; height:28px; width: 100%; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+  background-repeat: no-repeat; background-position: right 4px center; padding-right: 20px;}
+
+  /* Metric row (top KPI bar) */
+  .metric-col { flex:1; min-width:0; border-right: 1px solid #7EB876;}
+  .metric-col:last-child { border-right:none; }
+  .metric-label { font-size:11px; text-align: center; height: 48px; background: #28A745; color:#ffffff; text-transform:uppercase; font-weight:600; line-height:1.2; margin-bottom:4px; padding: 4px 8px; display: flex; align-items: center; justify-content: center;}
+  .metric-val { font-size:24px; font-weight:800; color:#F26314; line-height:1; margin-top: 12px;}
+  .metric-sub { font-size:14px; color:rgba(255,255,255,.5); margin: 4px 0 16px 0; }
+  .metric-sub span { font-weight: 600; color: #28A745; }
+
+  /* Progress bar */
+  .pbar { height:5px; background:#e2e8f0; border-radius:3px; overflow:hidden; }
+  .pbar-fill { height:100%; border-radius:3px; }
+
+  /* Compliance checks */
+  .check-row { display:flex; align-items:center; justify-content:space-between; padding:5px 0; border-bottom:1px solid #f0f3f8; font-size:12px; }
+  .check-row:last-child { border-bottom:none; }
+  .check-row img { width:16px; height:16px; }
+
+  /* Activity table */
+  .act-tbl { width:100%; border-collapse:collapse; font-size:12px; }
+  .act-tbl th { background:#E8EDF5; color:#4a6080; font-weight:700; padding:5px 8px; text-align:left; border:1px solid #d4dce9; font-size:10px; }
+  .act-tbl td { padding:4px 8px; border-bottom:1px solid #f0f3f8; color:#2d3f56; }
+  .act-tbl tr:hover td { background:#f6f8fb; }
+
+  /* Scrollable main */
+  .main-scroll { overflow-y:auto; margin: 16px 24px; border-radius: 8px;}
+  thead {border-bottom: 1px solid #00000010; font-weight: bold; color: #3B3B3B;}
+</style>
+</head>
+<body class="flex h-screen overflow-hidden">
+    <div class="contract-dashboard main-scroll">
+        <!-- Filter bar -->
+        <div class="flex items-center gap-4 flex-shrink-0 relative overflow-hidden" style="margin: 0 0 16px 0; height: 32px;">
+        <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
+            <select class="flt-select w-full"><option>All Projects</option><option>HĐ-2024-001</option><option>HĐ-2024-015</option></select>
+        </div>
+        <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
+            <select class="flt-select w-full"><option>All Clients</option></select>
+        </div>
+        <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
+            <select class="flt-select w-full"><option>All PMs</option></select>
+        </div>
+        <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
+            <select class="flt-select w-full"><option>All Types</option><option>Main Contract</option><option>Subcontract</option><option>Supplier Contract</option><option>Other Contract</option></select>
+        </div>
+        <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
+            <select class="flt-select w-full"><option>All Status</option><option>In-Progress</option><option>Approved</option><option>Cond-Approved</option><option>Rejected</option><option>Done</option></select>
+        </div>
+        <div class="flex items-center gap-1.5 w-1/6" style=" border: 1px solid #EDEDED; border-radius: 4px; overflow: hidden;">
+            <select class="flt-select w-full"><option>May 2026</option><option>Apr 2026</option><option>Mar 2026</option></select>
+        </div>
+        </div>
+        
+        <!-- KPI Metric strip -->
+        <div class="bg-[#ffffff] flex-shrink-0" style="min-height:72px; border: 1px solid #7EB876; margin: 0 0 16px 0; border-radius: 8px; overflow: hidden;">
+        <div class="flex h-full">
+            <div class="metric-col">
+            <div class="metric-label">Original Contract Value</div>
+            <div class="metric-val w-full flex justify-center">0</div>
+            </div>
+            <div class="metric-col">
+            <div class="metric-label">Approved Variations</div>
+            <div class="metric-val w-full flex justify-center">0</div>
+            </div>
+            <div class="metric-col">
+            <div class="metric-label">Revised Contract Value</div>
+            <div class="metric-val w-full flex justify-center">0</div>
+            <div class="metric-sub">67.1% of RCV</div>
+            </div>
+            <div class="metric-col">
+            <div class="metric-label">Revenue Recognised (To date)</div>
+            <div class="metric-val w-full flex justify-center">0</div>
+            <div class="metric-sub mt-2 flex justify-center" style="color: #3B3B3B;"><span>46% &nbsp;</span> of RCV</div>
+            </div>
+            <div class="metric-col">
+            <div class="metric-label">Cost Incurred (To date)</div>
+            <div class="metric-val w-full flex justify-center">0</div>
+            </div>
+            <div class="metric-col">
+            <div class="metric-label">Forecast Final Cost (EAC)</div>
+            <div class="metric-val w-full flex justify-center">0</div>
+            </div>
+            <div class="metric-col">
+            <div class="metric-label">Forecast Profit</div>
+            <div class="metric-val w-full flex justify-center">0</div>
+            <div class="metric-sub mt-2 flex justify-center" style="color: #3B3B3B;"><span>46% &nbsp;</span> of RCV</div>
+            </div>
+            <div class="metric-col">
+            <div class="metric-label">Forecast Margin</div>
+            <div class="metric-val w-full flex justify-center">0</div>
+            <div class="metric-sub mt-2 flex justify-center" style="color: #3B3B3B;"><span style="color: red;">-1.2% &nbsp;</span> of RCV</div>
+            </div>
+            <div class="metric-col">
+            <div class="metric-label">Forecast (To date)</div>
+            <div class="metric-val w-full flex justify-center">0</div>
+            <div class="metric-sub mt-2 flex justify-center" style="color: #3B3B3B;"><span>16% &nbsp;</span> of RCV</div>
+            </div>
+            <div class="metric-col">
+            <div class="metric-label">Cash Collected (To date)</div>
+            <div class="metric-val w-full flex justify-center">0</div>
+            </div>
+            <div class="metric-col">
+            <div class="metric-label">Outstanding Receivables</div>
+            <div class="metric-val w-full flex justify-center">0</div>
+            </div>
+        </div>
+        </div>
+
+        <!-- ── Section 1: Finance Performance ── -->
+        <div class="bg-white rounded border border-gray-200 overflow-hidden" style="border-radius: 12px; margin-bottom: 16px;">
+        <div class="sec-hdr">1. Finance Performance</div>
+        <div class="section-content grid grid-cols-2 gap-4">
+            <!-- Left: table -->
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+            <table class="dash-tbl">
+                <thead><tr><th>Description</th><th>Amount</th><th>% of RCV</th></tr></thead>
+                <tbody>
+                <tr><td>Original Contract Value</td><td>$52,600,000</td><td>100%</td></tr>
+                <tr><td>Approved Variations</td><td>$52,600,000</td><td>100%</td></tr>
+                <tr><td>Pending Variations</td><td>$52,600,000</td><td>100%</td></tr>
+                <tr><td>Revised Contract Value</td><td>$52,600,000</td><td>100%</td></tr>
+                <tr><td>Revenue Recognised (To date)</td><td>$52,600,000</td><td>100%</td></tr>
+                <tr><td>Cost Incurred (To date)</td><td>$52,600,000</td><td>100%</td></tr>
+                <tr><td>Forecast Final Cost (EAC)</td><td>$52,600,000</td><td>100%</td></tr>
+                <tr><td>Forecast Profit</td><td>$52,600,000</td><td>100%</td></tr>
+                <tr><td>Tender Margin</td><td>$52,600,000</td><td>100%</td></tr>
+                <tr><td>Forecast Profit</td><td>$52,600,000</td><td>100%</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <!-- Right: line chart -->
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+            <div class="font-bold mb-2" style="font-size: 12px; color: #1E2B58; padding: 0 0 8px 0;">Revenue vs Cost (Cumulative)</div>
+            <div class="chart-wrap" style="height:330px;">
+                <canvas id="financeChart"></canvas>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- ── Section 2: Progress & Time Performance ── -->
+        <div class="bg-white rounded border border-gray-200 overflow-hidden" style="border-radius: 12px; margin-bottom: 16px;">
+        <div class="sec-hdr">2. Progress & Time Performance</div>
+        <div class="section-content grid grid-cols-3 gap-4">
+            <!-- Left: table -->
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+            <table class="dash-tbl">
+                <thead><tr><th>Description</th><th>% of RCV</th></tr></thead>
+                <tbody>
+                <tr><td>Original Contract Value</td><td>100%</td></tr>
+                <tr><td>Approved Variations</td><td>100%</td></tr>
+                <tr><td>Pending Variations</td><td>100%</td></tr>
+                <tr><td>Revised Contract Value</td><td>100%</td></tr>
+                <tr><td>Revenue Recognised (To date)</td><td>100%</td></tr>
+                <tr><td>Cost Incurred (To date)</td><td>100%</td></tr>
+                <tr><td>Forecast Final Cost (EAC)</td><td>100%</td></tr>
+                <tr><td>Forecast Profit</td><td>100%</td></tr>
+                <tr><td>Tender Margin</td><td>100%</td></tr>
+                <tr><td>Forecast Profit</td><td>100%</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <!-- Mid: S-Curve -->
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+            <div class="font-bold mb-2" style="font-size: 12px; color: #1E2B58; padding: 0 0 8px 0;">Planned vs Actual Process (S-Curve)</div>
+            <div class="chart-wrap" style="height:330px;">
+                <canvas id="sCurveChart"></canvas>
+            </div>
+            </div>
+            <!-- Right: Milestone donut -->
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+            <div class="font-bold mb-2" style="font-size: 12px; color: #1E2B58; padding: 0 0 8px 0;">Milestone Status</div>
+            <div class="flex flex-col gap-3 justify-center h-full">
+            <div class="chart-wrap w-full" style="height:280px;">
+                    <canvas id="milestoneChart"></canvas>
+                </div>
+                <div class="donut-legend" style="display: flex; flex-direction: row; justify-content: center; gap: 2rem; margin-top: 1rem;">
+                    <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#22c55e;"></div>Completed</div>
+                    <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#60a5fa;"></div>On track</div>
+                    <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#fb923c;"></div>Overdue</div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- ── Section 3: Variations ── -->
+        <div class="bg-white rounded border border-gray-200 overflow-hidden" style="border-radius: 12px; margin-bottom: 16px;">
+        <div class="sec-hdr">3. Variations (Change Orders)</div>
+        <div class="section-content gridgap-4">
+            <!-- Stats row -->
+            <div class="flex divide-x divide-gray-200 mb-4 bg-gray-50 rounded border border-gray-200">
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Raised (YTD)</div>
+                <div class="text-lg font-bold" style="color: #0093FF;">$6.10M</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Approved</div>
+                <div class="text-lg font-bold" style="color: #28A745;">$6.10M</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Pending Approval</div>
+                <div class="text-lg font-bold" style="color: #F26314;">$6.10M</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Rejected</div>
+                <div class="text-lg font-bold" style="color: #DC3545;">$6.10M</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Avg Approval Time</div>
+                <div class="text-lg font-bold" style="color: #3b3b3b;">18 Ngày</div>
+            </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+            <!-- Aging bars -->
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+                <div class="font-bold mb-2" style="font-size: 12px; color: #1E2B58; padding: 0 0 8px 0;">Variations Aging (Pending)</div>
+                <div class="space-y-2">
+                <div class="flex items-center gap-2"><span class="text-xs text-gray-500 w-16 flex-shrink-0">0-30 days</span><div class="flex-1 bg-gray-100 rounded-sm overflow-hidden h-5"><div class="h-full bg-blue-400 rounded-sm flex items-center justify-end pr-1" style="width:65%"><span class="text-white text-[9px] font-bold">0.65</span></div></div></div>
+                <div class="flex items-center gap-2"><span class="text-xs text-gray-500 w-16 flex-shrink-0">31-60 days</span><div class="flex-1 bg-gray-100 rounded-sm overflow-hidden h-5"><div class="h-full bg-blue-400 rounded-sm flex items-center justify-end pr-1" style="width:71%"><span class="text-white text-[9px] font-bold">0.71</span></div></div></div>
+                <div class="flex items-center gap-2"><span class="text-xs text-gray-500 w-16 flex-shrink-0">61-90 days</span><div class="flex-1 bg-gray-100 rounded-sm overflow-hidden h-5"><div class="h-full bg-blue-400 rounded-sm flex items-center justify-end pr-1" style="width:27%"><span class="text-white text-[9px] font-bold">0.27</span></div></div></div>
+                <div class="flex items-center gap-2"><span class="text-xs text-gray-500 w-16 flex-shrink-0">&gt; 90 days</span><div class="flex-1 bg-gray-100 rounded-sm overflow-hidden h-5"><div class="h-full bg-blue-400 rounded-sm flex items-center justify-end pr-1" style="width:40%"><span class="text-white text-[9px] font-bold">0.4</span></div></div></div>
+                </div>
+            </div>
+            <!-- Donut -->
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+                <div class="font-bold mb-2" style="font-size: 12px; color: #1E2B58; padding: 0 0 8px 0;">Variations by Cause (YTD)</div>
+                <div class="flex gap-3 items-center justify-center">
+                <div class="chart-wrap" style="width:120px; height:120px; flex-shrink:0;">
+                    <canvas id="variationDonut"></canvas>
+                </div>
+                <div class="donut-legend">
+                    <div class="donut-legend-item"><div class="donut-legend-dot bg-blue-500"></div>Design Changes</div>
+                    <div class="donut-legend-item"><div class="donut-legend-dot bg-green-400"></div>Client Requests</div>
+                    <div class="donut-legend-item"><div class="donut-legend-dot bg-orange-400"></div>Site Conditions</div>
+                    <div class="donut-legend-item"><div class="donut-legend-dot bg-purple-400"></div>Regulatory</div>
+                    <div class="donut-legend-item"><div class="donut-legend-dot bg-gray-400"></div>Others</div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- ── Section 4: Claims & Disputes ── -->
+        <div class="bg-white rounded border border-gray-200 overflow-hidden" style="border-radius: 12px; margin-bottom: 16px;">
+        <div class="sec-hdr">4. Claims & Disputes</div>
+        <div class="section-content gridgap-4">
+            <!-- Stats row -->
+            <div class="flex divide-x divide-gray-200 mb-4 bg-gray-50 rounded border border-gray-200">
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">EOT Claims</div>
+                <div class="text-lg font-bold" style="color: #0093FF;">2</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Cost Claims</div>
+                <div class="text-lg font-bold" style="color: #28A745;">3</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Claims Approvall</div>
+                <div class="text-lg font-bold" style="color: #F26314;">1</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Claims Pending</div>
+                <div class="text-lg font-bold" style="color: #DC3545;">4</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Disputes / Arbitration</div>
+                <div class="text-lg font-bold" style="color: #3b3b3b;">0</div>
+            </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+                <div class="font-bold mb-2" style="font-size: 12px; color: #1E2B58; padding: 0 0 8px 0;">Claims Aging (Pending)</div>
+                <div class="space-y-2">
+                <div class="flex items-center gap-2"><span class="text-xs text-gray-500 w-16 flex-shrink-0">0-30 days</span><div class="flex-1 bg-gray-100 rounded-sm overflow-hidden h-5"><div class="h-full bg-blue-400 rounded-sm" style="width:31%"></div></div><span class="text-xs text-gray-500 ml-1">0.31</span></div>
+                <div class="flex items-center gap-2"><span class="text-xs text-gray-500 w-16 flex-shrink-0">31-60 days</span><div class="flex-1 bg-gray-100 rounded-sm overflow-hidden h-5"><div class="h-full bg-blue-400 rounded-sm" style="width:60%"></div></div><span class="text-xs text-gray-500 ml-1">0.60</span></div>
+                <div class="flex items-center gap-2"><span class="text-xs text-gray-500 w-16 flex-shrink-0">61-90 days</span><div class="flex-1 bg-gray-100 rounded-sm overflow-hidden h-5"><div class="h-full bg-blue-400 rounded-sm" style="width:56%"></div></div><span class="text-xs text-gray-500 ml-1">0.56</span></div>
+                <div class="flex items-center gap-2"><span class="text-xs text-gray-500 w-16 flex-shrink-0">&gt; 90 days</span><div class="flex-1 bg-gray-100 rounded-sm overflow-hidden h-5"><div class="h-full bg-blue-400 rounded-sm" style="width:68%"></div></div><span class="text-xs text-gray-500 ml-1">0.68</span></div>
+                </div>
+            </div>
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+                <div class="font-bold mb-2" style="font-size: 12px; color: #1E2B58; padding: 0 0 8px 0;">Claims by Type (Value)</div>
+                <div class="flex gap-3 items-center justify-center">
+                <div class="chart-wrap" style="width:120px;height:120px;flex-shrink:0;"><canvas id="claimsDonut"></canvas></div>
+                <div class="donut-legend">
+                    <div class="donut-legend-item"><div class="donut-legend-dot bg-blue-500"></div>EOT</div>
+                    <div class="donut-legend-item"><div class="donut-legend-dot bg-green-400"></div>Cost</div>
+                    <div class="donut-legend-item"><div class="donut-legend-dot bg-yellow-400"></div>Disruption</div>
+                    <div class="donut-legend-item"><div class="donut-legend-dot bg-gray-400"></div>Others</div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- ── Section 5: Payments & Cash Flow ── -->
+        <div class="bg-white rounded border border-gray-200 overflow-hidden" style="border-radius: 12px; margin-bottom: 16px;">
+        <div class="sec-hdr">5. Payments & Cash Flow</div>
+        <div class="section-content gridgap-4">
+            <!-- Stats row -->
+            <div class="flex divide-x divide-gray-200 mb-4 bg-gray-50 rounded border border-gray-200">
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Invoices Submitted YTD</div>
+                <div class="text-lg font-bold" style="color: #0093FF;">2</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Certified Amount</div>
+                <div class="text-lg font-bold" style="color: #28A745;">3</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Claims Approval</div>
+                <div class="text-lg font-bold" style="color: #F26314;">1</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Claims Pending</div>
+                <div class="text-lg font-bold" style="color: #DC3545;">4</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Disputes / Arbitration</div>
+                <div class="text-lg font-bold" style="color: #3b3b3b;">0</div>
+            </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+                <div class="font-bold mb-2" style="font-size: 12px; color: #1E2B58; padding: 0 0 8px 0;">Receivables Aging</div>
+                <div class="flex gap-3 items-center justify-center">
+                <div class="chart-wrap" style="width:140px;height:140px;flex-shrink:0;"><canvas id="receivablesDonut"></canvas></div>
+                <div class="donut-legend">
+                    <div class="donut-legend-item"><div class="donut-legend-dot bg-orange-400"></div>0-20 days <strong class="ml-1">2.10</strong></div>
+                    <div class="donut-legend-item"><div class="donut-legend-dot bg-blue-400"></div>21-40 days <strong class="ml-1">4.20</strong></div>
+                    <div class="donut-legend-item"><div class="donut-legend-dot bg-blue-600"></div>61-90 days <strong class="ml-1">7.05</strong></div>
+                    <div class="donut-legend-item"><div class="donut-legend-dot bg-red-500"></div>&gt; 90 days <strong class="ml-1">3.10</strong></div>
+                </div>
+                </div>
+            </div>
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+                <div class="font-bold mb-2" style="font-size: 12px; color: #1E2B58; padding: 0 0 8px 0;">Billing vs Collection (Cumulative)</div>
+                <div class="chart-wrap" style="height:150px;"><canvas id="billingChart"></canvas></div>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- ── Section 6: Risk Overview ── -->
+        <div class="bg-white rounded border border-gray-200 overflow-hidden" style="border-radius: 12px; margin-bottom: 16px;">
+        <div class="sec-hdr">6. Risk Overview</div>
+        <div class="section-content grid grid-cols-2 gap-4">
+            <!-- Heat map -->
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+            <div class="font-bold mb-2" style="font-size: 12px; color: #1E2B58; padding: 0 0 8px 0;">Risk Matrix</div>
+            <div class="overflow-auto">
+                <table style="width:100%; font-size:12px;">
+                <tbody>
+                    <tr>
+                    <td class="py-1 px-2 text-[12px] font-semibold text-gray-700 w-1/6">High</td>
+                    <td><div class="risk-cell bg-yellow-200 text-gray-700">1</div></td>
+                    <td><div class="risk-cell bg-orange-300 text-gray-700">2</div></td>
+                    <td><div class="risk-cell bg-red-400 text-gray-700">2</div></td>
+                    </tr>
+                    <tr>
+                    <td class="py-1 px-2 text-[12px] font-semibold text-gray-700 w-1/6">Medium</td>
+                    <td><div class="risk-cell bg-green-200 text-gray-700">1</div></td>
+                    <td><div class="risk-cell bg-yellow-200 text-gray-700">3</div></td>
+                    <td><div class="risk-cell bg-orange-300 text-gray-700">1</div></td>
+                    </tr>
+                    <tr>
+                    <td class="py-1 px-2 text-[12px] font-semibold text-gray-700 w-1/6">Low</td>
+                    <td><div class="risk-cell bg-green-200 text-gray-700">3</div></td>
+                    <td><div class="risk-cell bg-green-300 text-gray-700">1</div></td>
+                    <td><div class="risk-cell bg-yellow-100 text-gray-700">0</div></td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+            </div>
+            <!-- Top risks -->
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+            <div class="font-bold mb-2" style="font-size: 12px; color: #1E2B58; padding: 0 0 8px 0;">Top risk</div>
+            <div class="border border-gray-200 rounded overflow-hidden">
+                <table class="w-full" style="font-size: 12px;"> 
+                <thead style="background: #e8edf5; color: #1E2B58; font-weight: bold;"><tr class="border-b border-gray-200"><th class="text-left py-1.5 px-2" style="font-weight: 800;">Risk</th><th class="text-right py-1.5 px-2" style="font-weight: 800;">Likelihood</th></tr></thead>
+                <tbody>
+                    <tr class="border-b border-gray-100"><td class="py-1.5 px-2 text-gray-700">1. Delay in material approvals</td><td class="py-1.5 px-2 text-right font-semibold text-red-500" style="font-weight: 800;">High</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-1.5 px-2 text-gray-700">2. Design changes impacting MEP</td><td class="py-1.5 px-2 text-right font-semibold text-red-500" style="font-weight: 800;">High</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-1.5 px-2 text-gray-700">3. Skilled labor shortage</td><td class="py-1.5 px-2 text-right font-semibold text-orange-500" style="font-weight: 800;">Medium</td></tr>
+                    <tr><td class="py-1.5 px-2 text-gray-700">4. Delay in client decisions</td><td class="py-1.5 px-2 text-right font-semibold text-orange-500" style="font-weight: 800;">Medium</td></tr>
+                </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- ── Section 7: Personnel ── -->
+        <div class="bg-white rounded border border-gray-200 overflow-hidden" style="border-radius: 12px; margin-bottom: 16px;">
+        <div class="sec-hdr">7. Personnel</div>
+        <div class="section-content grid gap-4">
+            <!-- Stats row -->
+            <div class="flex divide-x divide-gray-200 bg-gray-50 rounded border border-gray-200 nowrap w-full">
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Total Actual Personnel</div>
+                <div class="text-lg font-bold" style="color: #0093FF;">1.300</div>
+            </div>
+
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Planned Personnel</div>
+                <div class="text-lg font-bold" style="color: #F26314;">1.380</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Variance / Difference</div>
+                <div class="text-lg font-bold" style="color: #DC3545;">80</div>
+            </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+                <table class="dash-tbl">
+                <thead><tr><th>Month</th><th>Planned</th><th>Actual</th><th>Progress %</th></tr></thead>
+                <tbody>
+                    <tr><td>9/2025</td><td>100</td><td>85</td><td>2%</td></tr>
+                    <tr><td>10/2025</td><td>150</td><td>140</td><td>9%</td></tr>
+                    <tr><td>11/2025</td><td>200</td><td>210</td><td>12%</td></tr>
+                    <tr><td>12/2025</td><td>250</td><td>240</td><td>26%</td></tr>
+                    <tr><td>1/2026</td><td>270</td><td>230</td><td>31%</td></tr>
+                    <tr><td>2/2026</td><td>280</td><td>260</td><td>31%</td></tr>
+                    <tr><td>3/2026</td><td>300</td><td>290</td><td>49%</td></tr>
+                    <tr><td>4/2026</td><td>320</td><td>310</td><td>89%</td></tr>
+                </tbody>
+                </table>
+            </div>
+            
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+                <div class="font-bold mb-2" style="font-size: 12px; color: #1E2B58; padding: 0 0 8px 0;">Personnel Fluctuation & Actual Progress</div>
+                <div class="chart-wrap" style="height:280px;"><canvas id="personnelChart"></canvas></div>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- ── Section 8: Materials & Equipment ── -->
+        <div class="bg-white rounded border border-gray-200 overflow-hidden"  style="border-radius: 12px; margin-bottom: 16px;">
+        <div class="sec-hdr">8. Materials & Equipment</div>
+        <div class="section-content grid gap-4">
+            <!-- Stats row -->
+            <div class="flex divide-x divide-gray-200 bg-gray-50 rounded border border-gray-200">
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Total Cumulative Import Value</div>
+                <div class="text-lg font-bold" style="color: #0093FF;">2</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Actual Wastage % / Loss %</div>
+                <div class="text-lg font-bold" style="color: #28A745;">3</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Material Inventory / Stock</div>
+                <div class="text-lg font-bold" style="color: #F26314;">1</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Equipment Readiness Rate</div>
+                <div class="text-lg font-bold" style="color: #DC3545;">4</div>
+            </div>
+            <div class="flex-1 px-4 py-3 text-center">
+                <div class="font-semibold" style="color: #3b3b3b; font-size: 12px;">Outsourcing Costs / Month</div>
+                <div class="text-lg font-bold" style="color: #3b3b3b;">0</div>
+            </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">
+                <table class="dash-tbl">
+                <thead><tr><th>Month</th><th>Import Value (B)</th><th>Actual Consumption (B)</th><th>Wastage %</th></tr></thead>
+                <tbody>
+                    <tr><td>9/2025</td><td>2.5</td><td>2.4</td><td>0.5%</td></tr>
+                    <tr><td>10/2025</td><td>4.2</td><td>3.8</td><td>1.5%</td></tr>
+                    <tr><td>11/2025</td><td>8.1</td><td>7.8</td><td>1.2%</td></tr>
+                    <tr><td>12/2025</td><td>12.5</td><td>11.8</td><td>3.5%</td></tr>
+                    <tr><td>1/2026</td><td>9.5</td><td>9.3</td><td>2.8%</td></tr>
+                    <tr><td>2/2026</td><td>7.5</td><td>7.2</td><td>2.5%</td></tr>
+                    <tr><td>3/2026</td><td>15.2</td><td>14.5</td><td>4.5%</td></tr>
+                    <tr><td>4/2026</td><td>10.4</td><td>13.0</td><td>2.6%</td></tr>
+                </tbody>
+                </table>
+            </div>     
+            <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 16px;">           
+                <div class="font-bold mb-2" style="font-size: 12px; color: #1E2B58; padding: 0 0 8px 0;">Actual Consumption</div>
+                <div class="chart-wrap" style="height:300px;"><canvas id="materialsChart"></canvas></div>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- ── Sections 9 & 10 side-by-side ── -->
+        <div class="grid grid-cols-2 gap-3">
+        <!-- Section 9: Compliance -->
+        <div class="bg-white rounded border border-gray-200 overflow-hidden" style="border-radius: 12px; margin-bottom: 16px;">
+            <div class="sec-hdr">9. Compliance & Contract Admin</div>
+            <div class="space-y-0.5" style="padding: 16px; font-size: 12px;">
+            <div class="check-row"><span class="w-3/5">Valid Insurance</span><span class="w-1/5"><img src="./assets/img/icon/check.png" alt=""></span><span class="w-1/5 text-green-500 font-bold flex justify-end">Yes</span></div>
+            <div class="check-row"><span class="w-3/5">Valid Performance Bond</span><span class="w-1/5"><img src="./assets/img/icon/check.png" alt=""></span><span class="w-1/5 text-green-500 font-bold flex justify-end">Yes</span></div>
+            <div class="check-row"><span class="w-3/5">Advance Payment Bond</span><span class="w-1/5"><img src="./assets/img/icon/check.png" alt=""></span><span class="w-1/5 text-green-500 font-bold flex justify-end">Yes</span></div>
+            <div class="check-row"><span class="w-3/5">Notices Issued on Time</span><span class="w-1/5"><img src="./assets/img/icon/warning.png" alt=""></span><span class="w-1/5 text-yellow-500 font-bold flex justify-end">92%</span></div>
+            <div class="check-row"><span class="w-3/5">Contractual Deliverables Due</span><span class="w-1/5"><img src="./assets/img/icon/warning.png" alt=""></span><span class="w-1/5 text-green-500 font-bold flex justify-end">3</span></div>
+            </div>
+        </div>
+        <!-- Section 10: Key Activities -->
+        <div class="bg-white rounded overflow-hidden border border-gray-200" style="border-radius: 12px; margin-bottom: 16px;">
+            <div class="sec-hdr">10. Key Activities (This month)</div>
+            <div style="padding: 16px;">
+            <div class="border border-gray-200 rounded overflow-hidden">
+                <table class="w-full" style="font-size: 12px;"> 
+                <thead style="background: #e8edf5; color: #1E2B58; font-weight: bold;"><tr class="border-b border-gray-200"><th class="w-3/5 text-left py-1.5 px-2" style="font-weight: 800;">Activity</th><th class="w-1/5">Deadline</th><th class="w-1/5 text-right py-1.5 px-2" style="font-weight: 800;">Status</th></tr></thead>
+                <tbody>
+                    <tr class="border-b border-gray-100"><td class="w-3/5 py-1.5 px-2 text-gray-700">Submit Monthly Progress Payment Application</td><td class="w-1/5 text-center">5 Jun 2025</td><td class="w-1/5 py-1.5 px-2 text-right font-semibold" style="font-weight: 800;">Yes</td></tr>
+                    <tr class="border-b border-gray-100"><td class="w-3/5 py-1.5 px-2 text-gray-700">Pour Concrete - 20th Floor B Tower</td><td class="w-1/5 text-center">6 Jun 2025</td><td class="w-1/5 py-1.5 px-2 text-right font-semibold" style="font-weight: 800;">Yes</td></tr>
+                    <tr class="border-b border-gray-100"><td class="w-3/5 py-1.5 px-2 text-gray-700">MEP Rough-in - Level 15</td><td class="w-1/5 text-center">7 Jun 2025</td><td class="w-1/5 py-1.5 px-2 text-right font-semibold" style="font-weight: 800;">92%</td></tr>
+                    <tr><td class="w-3/5 py-1.5 px-2 text-gray-700">Install Facade Panels</td><td class="w-1/5 text-center">8 Jun 2025</td><td class="w-1/5 py-1.5 px-2 text-right font-semibold" style="font-weight: 800;">2</td></tr>
+                </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- ── Sections 11 & 12 side-by-side ── -->
+        <div class="grid grid-cols-12 gap-3">
+        <!-- Section 11: Procurement -->
+        <div class="col-span-4 bg-white rounded border border-gray-200 overflow-hidden" style="border-radius: 12px; margin-bottom: 16px;">
+            <div class="sec-hdr">11. Procurement & Subcontracts</div>
+            <div style="padding: 16px;">
+            <table class="dash-tbl">
+                <tbody>
+                <tr><td>Major Subcontracts Awarded</td><td class="text-end font-bold">82%</td></tr>
+                <tr><td>Subcontract Commitments</td><td class="text-end font-bold">$18.65M</td></tr>
+                <tr><td>Committed Value to Date</td><td class="text-end font-bold">$15.25M</td></tr>
+                <tr><td>Complaints from Subcontractors</td><td class="text-end font-bold">2</td></tr>
+                <tr><td>Coverage Rate of Corresponding Clauses</td><td class="text-end font-bold">94%</td></tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <!-- Section 12: Actions Required -->
+        <div class="col-span-8 bg-white rounded overflow-hidden border border-gray-200" style="border-radius: 12px; margin-bottom: 16px;">
+            <div class="sec-hdr">12. Actions Required</div>    
+            <div style="padding: 16px;">
+            <div class="border border-gray-200 rounded overflow-hidden">
+                <table class="w-full" style="font-size: 12px;"> 
+                <thead style="background: #e8edf5; color: #1E2B58; font-weight: bold;"><tr class="border-b border-gray-200"><th class="w-2/5 text-left py-1.5 px-2" style="font-weight: 800;">Activity</th><th class="w-1/5">Assignee</th><th class="w-1/5">Due Date</th><th class="w-1/5 text-right py-1.5 px-2" style="font-weight: 800;">Status</th></tr></thead>
+                <tbody>
+                    <tr class="border-b border-gray-100"><td class="w-2/5 py-1.5 px-2 text-gray-700">Approve Variation Order - VR-045</td><td class="w-1/5 text-center">Customer</td><td class="w-1/5 text-center">5 Jun 2025</td><td class="w-1/5 py-1.5 px-2 text-right font-semibold" style="font-weight: 800;">Yes</td></tr>
+                    <tr class="border-b border-gray-100"><td class="w-2/5 py-1.5 px-2 text-gray-700">Provide Structural Drawings</td><td class="w-1/5 text-center">Consulting Unit</td><td class="w-1/5 text-center">5 Jun 2025</td><td class="w-1/5 py-1.5 px-2 text-right font-semibold" style="font-weight: 800;">Yes</td></tr>
+                    <tr class="border-b border-gray-100"><td class="w-2/5 py-1.5 px-2 text-gray-700">Pay Pending Invoice #INV-125</td><td class="w-1/5 text-center">Customer</td><td class="w-1/5 text-center">5 Jun 2025</td><td class="w-1/5 py-1.5 px-2 text-right font-semibold" style="font-weight: 800;">92%</td></tr>
+                    <tr><td class="w-2/5 py-1.5 px-2 text-gray-700">Site Inspection - QA/QC</td><td class="w-1/5 text-center">Head of QC/QL</td><td class="w-1/5 text-center">5 Jun 2025</td><td class="w-1/5 py-1.5 px-2 text-right font-semibold" style="font-weight: 800;">2</td></tr>
+                </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="h-4"></div>
+    </div>
+
+</body>
+</html>
