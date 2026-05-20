@@ -20,6 +20,22 @@ const DASH_TAB_MAP = {
   "company":  { module: "modules/dashboard/company-dashboard.html",  hasCharts: false },
 };
 
+// ── Context topbar theo trang nav ───────────────────
+const NAV_CONTEXT = {
+  "contract.html":          { title: "Contract",          desc: "Quản lý và theo dõi hợp đồng" },
+  "submission-review.html": { title: "Submission Review", desc: "Xem xét và phê duyệt hồ sơ nộp" },
+  "payment.html":           { title: "Payment",           desc: "Quản lý thanh toán và hóa đơn" },
+  "help.html":              { title: "Trợ giúp",          desc: "Hướng dẫn sử dụng và hỗ trợ" },
+  "settings.html":          { title: "Cài đặt",           desc: "Tùy chỉnh ứng dụng và tài khoản" },
+};
+
+// ── Context topbar theo dashboard tab ───────────────
+const DASH_TAB_CONTEXT = {
+  "contract": { title: "Contract Dashboard", desc: "Real-time overview of project performance and health" },
+  "project":  { title: "Project Dashboard",  desc: "Project view (Multi contracts)" },
+  "company":  { title: "Company Dashboard",  desc: "Contract Management Overview" },
+};
+
 const PAGE_TITLES = {
   "dashboard.html":         "consIMS — Dashboard",
   "contract.html":          "consIMS — Contract",
@@ -77,6 +93,21 @@ function fadeIn(el) {
     el.style.opacity   = "1";
     el.style.transform = "translateY(0)";
   }));
+}
+
+// ── Cập nhật topbar title/description với fade ───────
+function updateTopbarContext(title, desc) {
+  const titleEl = document.getElementById("topbar-title");
+  const descEl  = document.getElementById("topbar-desc");
+  if (!titleEl || !descEl) return;
+  titleEl.style.opacity = "0";
+  descEl.style.opacity  = "0";
+  setTimeout(() => {
+    titleEl.textContent = title;
+    descEl.textContent  = desc;
+    titleEl.style.opacity = "1";
+    descEl.style.opacity  = "1";
+  }, 200);
 }
 
 // ── Re-run scripts sau inject ────────────────────────
@@ -152,6 +183,9 @@ async function switchDashTab(tab) {
   fadeOut(contentEl);
   updateDashTabActive(tab);
 
+  const ctx = DASH_TAB_CONTEXT[tab];
+  if (ctx) updateTopbarContext(ctx.title, ctx.desc);
+
   const html = await fetchHTML(config?.module);
 
   contentEl.innerHTML = html || `<div style="display:flex;align-items:center;justify-content:center;height:60vh;font-size:14px;color:#8C98C2;">Không tải được nội dung.</div>`;
@@ -193,6 +227,8 @@ async function navigateTo(page, { pushState = true } = {}) {
   // Reset dash tab state khi rời dashboard
   if (page !== "dashboard.html") {
     currentDashTab = null;
+    const ctx = NAV_CONTEXT[page];
+    if (ctx) updateTopbarContext(ctx.title, ctx.desc);
     contentEl.innerHTML = buildNavPlaceholder(page);
     contentEl.scrollTop = 0;
     progressDone();
