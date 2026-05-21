@@ -294,3 +294,207 @@ function initProjectCharts() {
         options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, padding:8, font:{size:9} } } }, scales:{ y:{ grid:{ color:'#f0f3f8' }, ticks:{font:{size:9}} }, y1:{ position:'right', min:0, max:10, grid:{ display:false }, ticks:{callback:v=>v+'%',font:{size:9}} }, x:{ grid:{display:false}, ticks:{font:{size:9}} } } }
     });
 }
+
+
+// ═══════════════════════════════════════════════════════
+// COMPANY DASHBOARD — charts cho company-dashboard.html
+// ═══════════════════════════════════════════════════════
+function initCompanyCharts() {
+    _setChartDefaults();
+
+    const months   = ['3/2026','4/2026','5/2026','6/2026','7/2026'];
+    const mthsLong = ['9/25','10/25','11/25','12/25','1/26','2/26','3/26','4/26'];
+
+    // 1.1 statusDonut1
+    _safeChart('statusDonut1', {
+        type: 'doughnut',
+        data: { labels:['Active','Awarded','Tender','Suspended', 'Completed', 'Defect Liability'], datasets:[{ data:[13.9,37.5,5.5,10.2,12.4,20.5], backgroundColor:['#0093FF','#6FD195','#FFD65B', '#DC3545', '#8671FF', '#FFAE4C'], borderWidth:2, borderColor:'#fff' }] },
+        options: { responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{ legend:{ display:false } } }
+    });
+
+    // 1.2 contractTypeDonut2
+    _safeChart('contractTypeDonut2', {
+        type: 'doughnut',
+        data: { labels:['Lump Sum','Unit Rate','Cost Plus','EPC', 'Design-Build'], datasets:[{ data:[41.4,23.7,16.4,11.4,7.1], backgroundColor:['#7086FD', '#6FD195', '#FFAE4C', '#07DBFA', '#FFD65B'], borderWidth:2, borderColor:'#fff' }] },
+        options: { responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{ legend:{ display:false } } }
+    });
+
+    // 1.3 clientDonut3
+    _safeChart('clientDonut3', {
+        type: 'doughnut',
+        data: { labels:['ABC Corp','Govt of State','XYZ Developers','Global Infra', 'Others'], datasets:[{ data:[41.4,23.7,16.4,11.4,7.1], backgroundColor:['#7086FD', '#6FD195', '#FFAE4C', '#07DBFA', '#FFD65B'], borderWidth:2, borderColor:'#fff' }] },
+        options: { responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{ legend:{ display:false } } }
+    });
+
+    // 1.4 regionDonut4
+    _safeChart('regionDonut4', {
+        type: 'doughnut',
+        data: { labels:['Northern','Southern','Eastern','Western', 'International '], datasets:[{ data:[41.4,23.7,16.4,11.4,7.1], backgroundColor:['#7086FD', '#6FD195', '#FFAE4C', '#07DBFA', '#FFD65B'], borderWidth:2, borderColor:'#fff' }] },
+        options: { responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{ legend:{ display:false } } }
+    });
+
+    // 3.1 revCosChart — Revenue vs Cost Trend
+    _safeChart('revCosChart', {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [
+                { label:'Revenue (Cumulative)',  data:[20,35,42,58,78], borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.08)', tension:0.4, pointRadius:3, borderWidth:2 },
+                { label:'Cost (Cumulative)',   data:[32,40,55,67,90], borderColor:'#22c55e', backgroundColor:'rgba(249,115,22,0.08)',  tension:0.4, pointRadius:3, borderWidth:2 }
+            ]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, padding:10, font:{size:9} } } }, scales:{ y:{ grid:{ color:'#f0f3f8' }, ticks:{font:{size:9}} }, x:{ grid:{display:false}, ticks:{font:{size:9}} } } }
+    });
+
+    // 3.2 marginByProjectChart — Margin % by Project (Forecast)
+    _safeChart('marginByProjectChart', {
+    type: 'bar',
+    data: {
+        labels: ['Metro Rail', 'Airport\nTerminal', 'River Bridge', 'Tech Park', 'Highway\nExpansion', 'Residential\nTowers'],
+        datasets: [{
+            data: [24.5, 18.7, 12.6, 7.2, 4.1, -3.2],
+            backgroundColor: [
+                'rgba(40,120,60,0.85)',
+                'rgba(55,140,70,0.85)',
+                'rgba(70,160,85,0.85)',
+                'rgba(100,185,110,0.85)',
+                'rgba(140,205,150,0.85)',
+                'rgba(220,60,60,0.85)',
+            ],
+            borderWidth: 0,
+            borderRadius: { topLeft: 2, topRight: 2, bottomLeft: 0, bottomRight: 0 },
+        }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y}%` } },
+                datalabels: { display: false },
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { size: 9 }, color: '#555' }
+                },
+                y: {
+                    grid: { color: '#f0f3f8' },
+                    ticks: {
+                        font: { size: 9 },
+                        callback: v => v + '%'
+                    },
+                    afterDataLimits: scale => {
+                        scale.max = scale.max + 3;
+                        scale.min = Math.min(scale.min - 2, -5);
+                    }
+                }
+            },
+            animation: {
+                onComplete: ({ chart }) => {
+                    const ctx = chart.ctx;
+                    const ds = chart.data.datasets[0];
+                    chart.getDatasetMeta(0).data.forEach((bar, i) => {
+                        const val = ds.data[i];
+                        const label = val.toFixed(1);
+                        const isNeg = val < 0;
+                        ctx.fillStyle = '#333';
+                        ctx.font = 'bold 9px "Nunito Sans", sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(label, bar.x, isNeg ? bar.y + 12 : bar.y - 4);
+                    });
+                }
+            }
+        }
+    });
+
+    // 5.1 penVarAgiChart — Pending Variations Aging
+    _safeChart('penVarAgiChart', {
+        type: 'doughnut',
+        data: { labels:['0-20 days','21-40 days','61-90 days','> 90 days'], datasets:[{ data:[2.10,4.20,7.05,3.4], backgroundColor:['#28A745','#FFC107','#DC3545', '#0093FF'], borderWidth:2, borderColor:'#fff' }] },
+        options: { responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{ legend:{ display:false } } }
+    });
+
+    // 6.1 claDisChart — Claims & disputes overview
+    _safeChart('claDisChart', {
+        type: 'doughnut',
+        data: { labels:['0-20 days','21-40 days','61-90 days','> 90 days'], datasets:[{ data:[2.10,4.20,7.05,3.4], backgroundColor:['#28A745','#FFC107','#DC3545', '#0093FF'], borderWidth:2, borderColor:'#fff' }] },
+        options: { responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{ legend:{ display:false } } }
+    });
+
+
+    // 6.2 Gauge — Claims Success Ratio
+    const claimsApproved  = 15.2;
+    const claimsPending   = 6.9;
+    const claimsTotal     = claimsApproved + claimsPending;
+    const claimsSuccess   = Math.round((claimsApproved / claimsTotal) * 100);
+
+    function drawClaimsNeedle(chart) {
+        const { ctx, chartArea: { left, right, bottom } } = chart;
+        const cx     = (left + right) / 2;
+        const cy     = bottom - 10;
+        const radius = (right - left) / 2 * 0.78;
+        const angle  = Math.PI - Math.PI * (claimsSuccess / 100);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + Math.cos(angle) * radius * 0.72, cy - Math.sin(angle) * radius * 0.72);
+        ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#2c3e50'; ctx.fill();
+
+        ctx.textAlign = 'center';
+        ctx.font = 'bold 16px "Nunito Sans", sans-serif';
+        ctx.fillStyle = '#2c3e50';
+        ctx.fillText(claimsSuccess + '%', cx, cy - radius * 0.3);
+        ctx.font = '9px "Nunito Sans", sans-serif';
+        ctx.fillStyle = '#888';
+        ctx.fillText('Success Rate', cx, cy - radius * 0.3 + 14);
+        ctx.restore();
+    }
+
+    _safeChart('claimsGaugeChart', {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [claimsSuccess, 100 - claimsSuccess], // chỉ 2 phần, tổng = 100
+                backgroundColor: ['#27ae60', '#e74c3c'],
+                borderWidth: 0,
+                circumference: 180,
+                rotation: 270,
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            cutout: '72%',
+            plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        },
+        plugins: [{ id: 'gaugeNeedle', afterDraw: drawClaimsNeedle }]
+    });
+
+
+    // 7.1 recAgiChart — Receivables Aging
+    _safeChart('recAgiChart', { 
+        type: 'doughnut',
+        data: { labels:['0-20 days','21-40 days','61-90 days','> 90 days'], datasets:[{ data:[2.10,4.20,7.05,3.4], backgroundColor:['#28A745','#FFC107','#DC3545', '#0093FF'], borderWidth:2, borderColor:'#fff' }] },
+        options: { responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{ legend:{ display:false } } }
+    });
+
+    // 7.2 bilColTreChart — Billing vs Collection Trend
+    _safeChart('bilColTreChart', {
+        type: 'bar',
+        data: {
+            labels:['11/25','12/25','1/26','2/26','3/26','4/26'],
+            datasets:[
+                { label:'Billed (M USD)',       data:[28,35,42,50,60,70], backgroundColor:'rgba(59,130,246,0.5)', borderRadius:2, yAxisID:'y' },
+                { label:'Collected (M USD)',    data:[22,30,38,45,55,65], backgroundColor:'rgba(34,197,94,0.5)',  borderRadius:2, yAxisID:'y' },
+            ]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, padding:8, font:{size:9} } } }, scales:{ y:{ grid:{ color:'#f0f3f8' }, ticks:{font:{size:9}} }, y1:{ position:'right', min:0, max:100, grid:{ display:false }, ticks:{callback:v=>v+'%',font:{size:9}} }, x:{ grid:{display:false}, ticks:{font:{size:9}} } } }
+    });
+
+}

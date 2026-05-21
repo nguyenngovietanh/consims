@@ -17,7 +17,7 @@ const PAGE_CONTENT_MAP = {
 const DASH_TAB_MAP = {
   "contract": { module: "modules/dashboard/contract-dashboard.html", hasCharts: true,  initFn: "initContractCharts" },
   "project":  { module: "modules/dashboard/project-dashboard.html",  hasCharts: true,  initFn: "initProjectCharts"  },
-  "company":  { module: "modules/dashboard/company-dashboard.html",  hasCharts: false, initFn: null                 },
+  "company":  { module: "modules/dashboard/company-dashboard.html",  hasCharts: true, initFn: "initCompanyCharts"  }
 };
 
 // ── Context topbar theo trang nav ───────────────────
