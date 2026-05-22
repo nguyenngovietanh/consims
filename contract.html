@@ -17,7 +17,7 @@
   ::-webkit-scrollbar-thumb { background:#F9F9FA; border-radius:3px; }
 
   /* Metric row (top KPI bar) */
-  .metric-contract-col { flex:1; min-width:0;  border-radius: 12px; overflow: hidden; padding: 20px; }
+  .metric-contract-col { flex:1; min-width:0;  border-radius: 12px; overflow: hidden; padding: 20px; background: #ffffff;}
   .metric-contract-label { font-size:16px; color:#3b3b3b; font-weight:800; line-height:1.2; margin-bottom:4px; display: flex; align-items: center; justify-content: left;}
   .metric-contract-val { font-size:32px; font-weight:700; color:#3b3b3b; line-height:1; margin-top: 20px;}
   .metric-contract-sub { font-size:14px; color:rgba(255,255,255,.5); margin-top: 4px; color: #8C98C2; }
@@ -289,7 +289,7 @@ tr.child-rows.open { display: table-row; }
   transition: all .15s;
   font-family: inherit;
 }
-.page-btn:hover:not(:disabled) { background: #f0f4ff; border-color: #b8c8f0; }
+.page-btn:hover:not(:disabled) { background: #f0f4ff; border-color: #b8c8f0; color: #1a3a6b; }
 .page-btn.active { background: #1a3a6b; color: #fff; border-color: #1a3a6b; font-weight: 700; }
 .page-btn:disabled { opacity: .4; cursor: default; }
 .page-btn.ellipsis { border-color: transparent; background: none; cursor: default; color: #aaa; pointer-events: none; }
@@ -307,6 +307,8 @@ tr.child-rows.open { display: table-row; }
   cursor: pointer;
   font-family: inherit;
 }
+
+#mainTable {height: 100%;}
 
   /* Scrollable main */
   .main-scroll { overflow-y:auto; margin: 24px;}

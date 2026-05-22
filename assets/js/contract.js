@@ -249,6 +249,28 @@ window.ContractModule = (function() {
             }
         });
 
+        // ── LOGIC FIX FULL HEIGHT: Render thêm các dòng trống nếu số dòng thực tế ít hơn pageSize ──
+        const currentRenderedRows = paged.length; // Số hợp đồng gốc (Top level) của trang hiện tại
+        if (currentRenderedRows < pageSize) {
+            const remainingRows = pageSize - currentRenderedRows;
+            for (let i = 0; i < remainingRows; i++) {
+                const emptyTr = document.createElement('tr');
+                // Gán các class tr trỏ chuột không tương tác, giữ nguyên chiều cao chuẩn của các dòng khác
+                emptyTr.className = 'contract-row empty-placeholder-row select-none pointer-events-none';
+                emptyTr.style.height = '48px'; // Chiều cao cố định tương đương row thật
+                emptyTr.innerHTML = `
+                    <td></td>
+                    <td>&nbsp;</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                `;
+                tbody.appendChild(emptyTr);
+            }
+        }
+
         const pageInfo = document.getElementById('pageInfo');
         if (pageInfo) {
             const s = start + 1, e = Math.min(start + pageSize, total);
