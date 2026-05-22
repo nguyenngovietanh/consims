@@ -6,7 +6,7 @@
 // ── Map trang nav chính ──────────────────────────────
 const PAGE_CONTENT_MAP = {
   "dashboard.html":         { module: null, tabs: "modules/dashboard/dashboard-tabs.html", hasCharts: false },
-  "contract.html":          { module: null, tabs: null, hasCharts: false },
+  "contract.html":          { module: null, tabs: "contract.html", hasCharts: false },
   "submission-review.html": { module: null, tabs: null, hasCharts: false },
   "payment.html":           { module: null, tabs: null, hasCharts: false },
   "help.html":              { module: null, tabs: null, hasCharts: false },
@@ -230,7 +230,27 @@ async function navigateTo(page, { pushState = true } = {}) {
     currentDashTab = null;
     const ctx = NAV_CONTEXT[page];
     if (ctx) updateTopbarContext(ctx.title, ctx.desc);
-    contentEl.innerHTML = buildNavPlaceholder(page);
+    
+    // Nếu là trang contract.html, nạp nội dung thực tế
+    if (page === "contract.html") {
+        const html = await fetchHTML(page);
+        if (html) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const mainContent = doc.querySelector('.contract-dashboard');
+            contentEl.innerHTML = mainContent ? mainContent.outerHTML : html;
+            
+            // Khởi tạo Module Contract sau khi DOM đã được push vào
+            if (window.ContractModule) {
+                setTimeout(() => window.ContractModule.init(), 50);
+            }
+        } else {
+            contentEl.innerHTML = buildNavPlaceholder(page);
+        }
+    } else {
+        contentEl.innerHTML = buildNavPlaceholder(page);
+    }
+    
     contentEl.scrollTop = 0;
     progressDone();
     fadeIn(contentEl);
@@ -286,13 +306,4 @@ function progressBar(percent, status) {
     <div style="background:#e5e7eb; border-radius:3px; height:10px; min-width:80px;">
       <div style="background:${color}; height:100%; border-radius:3px; width:${percent}%;"></div>
     </div>`;
-
-  row.innerHTML = `
-    <td>${item.riskTitle}</td>
-    <td>${item.baselineDate}</td>
-    <td>${item.plannedDate}</td>
-    <td>${item.forecastDate}</td>
-    <td>${item.status}</td>
-    <td>${progressBar(item.progress, item.statusKey)}</td>
-  `;
 }
