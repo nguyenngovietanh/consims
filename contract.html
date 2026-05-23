@@ -11,358 +11,395 @@
 
 <style>
   * { box-sizing: border-box; }
-  body { margin:0; font-family:'Nunito Sans', sans-serif; background:#F9F9FA; }
-  ::-webkit-scrollbar { width:5px; height:5px; }
-  ::-webkit-scrollbar-track { background:#F9F9FA; }
-  ::-webkit-scrollbar-thumb { background:#F9F9FA; border-radius:3px; }
+  
+  /* Khóa cứng khung hình trình duyệt ở cấp cao nhất, tuyệt đối không cho scroll toàn trang */
+  html, body { 
+    margin: 0; 
+    padding: 0; 
+    height: 100%; 
+    width: 100%;
+    font-family: 'Nunito Sans', sans-serif; 
+    background: #F9F9FA; 
+    overflow: hidden; 
+  }
+  
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #F9F9FA; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 
   /* Metric row (top KPI bar) */
-  .metric-contract-col { flex:1; min-width:0;  border-radius: 12px; overflow: hidden; padding: 20px; background: #ffffff;}
-  .metric-contract-label { font-size:16px; color:#3b3b3b; font-weight:800; line-height:1.2; margin-bottom:4px; display: flex; align-items: center; justify-content: left;}
-  .metric-contract-val { font-size:32px; font-weight:700; color:#3b3b3b; line-height:1; margin-top: 20px;}
-  .metric-contract-sub { font-size:14px; color:rgba(255,255,255,.5); margin-top: 4px; color: #8C98C2; }
+  .metric-contract-col { flex: 1; min-width: 0; border-radius: 12px; overflow: hidden; padding: 20px; }
+  .metric-contract-label { font-size: 16px; color: #3b3b3b; font-weight: 800; line-height: 1.2; margin-bottom: 4px; display: flex; align-items: center; justify-content: left; }
+  .metric-contract-val { font-size: 32px; font-weight: 700; color: #3b3b3b; line-height: 1; margin-top: 20px; }
+  .metric-contract-sub { font-size: 14px; margin-top: 4px; color: #8C98C2; }
   .metric-contract-sub span { font-weight: 600; color: #3b3b3b; }
 
   /* ── Toolbar (ngoài bảng) ── */
-.toolbar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
 
-.tab-pill {
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 13px;
-  cursor: pointer;
-  border: 1px solid #e2e6f0;
-  background: #fff;
-  color: #555;
-  transition: all .15s;
-  white-space: nowrap;
-  font-family: inherit;
-}
-.tab-pill:hover { background: #f0f4ff; border-color: #b8c8f0; }
-.tab-pill.active { background: #1a3a6b; color: #fff; border-color: #1a3a6b; }
+  .tab-pill {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid #e2e6f0;
+    background: #fff;
+    color: #555;
+    transition: all .15s;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .tab-pill:hover { background: #f0f4ff; border-color: #b8c8f0; }
+  .tab-pill.active { background: #1a3a6b; color: #fff; border-color: #1a3a6b; }
 
-.toolbar-right {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+  .toolbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
-.sort-select {
-  font-size: 13px;
-  padding: 6px 28px 6px 10px;
-  border: 1px solid #e2e6f0;
-  border-radius: 8px;
-  background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'><path d='m6 9 6 6 6-6'/></svg>") no-repeat right 8px center;
-  appearance: none;
-  color: #555;
-  outline: none;
-  cursor: pointer;
-  font-family: inherit;
-}
+  .sort-select {
+    font-size: 13px;
+    padding: 6px 28px 6px 10px;
+    border: 1px solid #e2e6f0;
+    border-radius: 8px;
+    background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'><path d='m6 9 6 6 6-6'/></svg>") no-repeat right 8px center;
+    appearance: none;
+    color: #555;
+    outline: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
 
-.search-box {
-  font-size: 13px;
-  padding: 6px 12px 6px 32px;
-  border: 1px solid #e2e6f0;
-  border-radius: 8px;
-  background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2'><circle cx='11' cy='11' r='8'/><path d='m21 21-4.35-4.35'/></svg>") no-repeat left 10px center;
-  outline: none;
-  width: 210px;
-  color: #333;
-  font-family: inherit;
-}
-.search-box::placeholder { color: #aaa; }
-.search-box:focus { border-color: #1a3a6b; }
+  .search-box {
+    font-size: 13px;
+    padding: 6px 12px 6px 32px;
+    border: 1px solid #e2e6f0;
+    border-radius: 8px;
+    background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2'><circle cx='11' cy='11' r='8'/><path d='m21 21-4.35-4.35'/></svg>") no-repeat left 10px center;
+    outline: none;
+    width: 210px;
+    color: #333;
+    font-family: inherit;
+  }
+  .search-box::placeholder { color: #aaa; }
+  .search-box:focus { border-color: #1a3a6b; }
 
-/* ── Table card (giữa) ── */
-.table-card {
-  flex: 1;
-  min-height: 0;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,.08);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
+  /* ── LỚP QUAN TRỌNG: Table card bọc bảng ── */
+  .table-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08);
+    overflow: hidden;
+    width: 100%;
+    /* Sử dụng giải pháp Calc an toàn tuyệt đối: 
+       100% chiều cao màn hình - 48px padding - 150px (Metric KPI) - 36px (Toolbar) - 40px (Pagination) */
+    max-height: calc(100vh - 280px); 
+    display: flex;
+    flex-direction: column;
+  }
 
-.table-scroll {
-  flex: 1;
-  min-height: 0;
-  overflow: auto;
-}
+  .table-scroll {
+    overflow-y: auto;   /* Bắt buộc sinh thanh cuộn dọc nội khu */
+    overflow-x: auto;   /* Sinh thanh cuộn ngang nếu màn hình nhỏ */
+    width: 100%;
+  }
 
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  font-size: 13px;
-}
+  /* Đảm bảo tiêu đề bảng đứng im khi cuộn dòng dữ liệu */
+  .table-scroll table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f7f9fc;
+    z-index: 10;
+    box-shadow: inset 0 -1px 0 #eef0f5; /* Thay cho border-bottom để tránh lỗi trôi dòng khi scroll */
+  }
 
-thead th {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: #f7f9fc;
-  color: #6b7a99;
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: .3px;
-  padding: 10px 14px;
-  border-bottom: 1px solid #eef0f5;
-  white-space: nowrap;
-  text-align: left;
-  user-select: none;
-}
-thead th:first-child { width: 36px; padding-left: 16px; }
+  .table-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+  .table-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 3px; }
+  .table-scroll::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
+  .table-scroll::-webkit-scrollbar-track { background: transparent; }
 
-tbody tr.contract-row { transition: background .1s; }
-tbody tr.contract-row:hover > td { background: #f8faff; }
-tbody tr.contract-row.expanded > td { background: #f0f5ff; }
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+  }
 
-tbody td {
-  padding: 11px 14px;
-  border-bottom: 1px solid #f0f2f7;
-  color: #2d3a50;
-  vertical-align: middle;
-  white-space: nowrap;
-  background: #fff;
-}
-tbody td:first-child { padding-left: 16px; }
+  thead th {
+    color: #6b7a99;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: .3px;
+    padding: 10px 14px;
+    border-bottom: 1px solid #eef0f5;
+    white-space: nowrap;
+    text-align: left;
+    user-select: none;
+  }
+  thead th:first-child { width: 36px; padding-left: 16px; }
 
-/* Sub-contract indented rows */
-tbody tr.sub-row > td { background: #f8fbff; border-bottom: 1px solid #eef1f8; }
-tbody tr.sub-row:hover > td { background: #eef4ff; }
-tbody tr.sub-row > td:first-child { padding-left: 16px; }
-.sub-indent { padding-left: 32px !important; display: flex; align-items: center; gap: 8px; }
-.sub-indent::before { content: ''; display: inline-block; width: 16px; height: 1px; background: #b8c8f0; flex-shrink: 0; }
+  tbody tr.contract-row { transition: background .1s; }
+  tbody tr.contract-row:hover > td { background: #f8faff; }
+  tbody tr.contract-row.expanded > td { background: #f0f5ff; }
 
-/* Supplier row (gắn với main, không indented nhiều) */
-tbody tr.supplier-row > td { background: #f8fbff; border-bottom: 1px solid #eef1f8; }
-tbody tr.supplier-row:hover > td { background: #eef4ff; }
-.supplier-indent { padding-left: 32px !important; display: flex; align-items: center; gap: 8px; }
-.supplier-indent::before { content: ''; display: inline-block; width: 16px; height: 1px; background: #b8c8f0; flex-shrink: 0; }
+  tbody td {
+    padding: 11px 14px;
+    border-bottom: 1px solid #f0f2f7;
+    color: #2d3a50;
+    vertical-align: middle;
+    white-space: nowrap;
+    background: #fff;
+  }
+  tbody td:first-child { padding-left: 16px; }
 
-/* Expand/collapse rows hidden by default */
-tr.child-rows { display: none; }
-tr.child-rows.open { display: table-row; }
+  /* Sub-contract indented rows */
+  tbody tr.sub-row > td { background: #f8fbff; border-bottom: 1px solid #eef1f8; }
+  tbody tr.sub-row:hover > td { background: #eef4ff; }
+  tbody tr.sub-row > td:first-child { padding-left: 16px; }
+  .sub-indent { padding-left: 32px !important; display: flex; align-items: center; gap: 8px; }
+  .sub-indent::before { content: ''; display: inline-block; width: 16px; height: 1px; background: #b8c8f0; flex-shrink: 0; }
 
-.contract-name {
-  color: #1a5cbf;
-  font-weight: 500;
-  cursor: pointer;
-  max-width: 400px;
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: middle;
-}
-.contract-name:hover { text-decoration: underline; }
+  /* Supplier row */
+  tbody tr.supplier-row > td { background: #f8fbff; border-bottom: 1px solid #eef1f8; }
+  tbody tr.supplier-row:hover > td { background: #eef4ff; }
+  .supplier-indent { padding-left: 32px !important; display: flex; align-items: center; gap: 8px; }
+  .supplier-indent::before { content: ''; display: inline-block; width: 16px; height: 1px; background: #b8c8f0; flex-shrink: 0; }
 
-.sub-name {
-  color: #2563eb;
-  font-size: 12px;
-  cursor: pointer;
-  max-width: 380px;
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: middle;
-}
-.sub-name:hover { text-decoration: underline; }
+  tr.child-rows { display: none; }
+  tr.child-rows.open { display: table-row; }
 
-.items-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: #e8edf8;
-  color: #1a3a6b;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 12px;
-  min-width: 32px;
-}
+  .contract-name {
+    color: #1a5cbf;
+    font-weight: 500;
+    cursor: pointer;
+    max-width: 400px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+  }
+  .contract-name:hover { text-decoration: underline; }
 
-.type-badge {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 9px;
-  border-radius: 10px;
-  white-space: nowrap;
-}
-.type-main     { background: #e0edff; color: #1a5cbf; }
-.type-sub      { background: #e6f9ee; color: #166534; }
-.type-supplier { background: #fef3c7; color: #92400e; }
-.type-other    { background: #f3f0ff; color: #5b21b6; }
+  .sub-name {
+    color: #2563eb;
+    font-size: 12px;
+    cursor: pointer;
+    max-width: 380px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+  }
+  .sub-name:hover { text-decoration: underline; }
 
-.cb { width: 15px; height: 15px; cursor: pointer; accent-color: #1a3a6b; }
+  .items-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #e8edf8;
+    color: #1a3a6b;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    min-width: 32px;
+  }
 
-/* ── Action "···" ── */
-.action-cell { position: relative; text-align: right; padding-right: 16px; width: 60px; }
+  .type-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+  .type-main     { background: #e0edff; color: #1a5cbf; }
+  .type-sub      { background: #e6f9ee; color: #166534; }
+  .type-supplier { background: #fef3c7; color: #92400e; }
+  .type-other    { background: #f3f0ff; color: #5b21b6; }
 
-.action-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 6px;
-  color: #8a94a6;
-  font-size: 18px;
-  line-height: 1;
-  transition: background .15s, color .15s;
-  letter-spacing: 1px;
-  font-family: inherit;
-}
-.action-btn:hover { background: #eef1f8; color: #1a3a6b; }
+  .cb { width: 15px; height: 15px; cursor: pointer; accent-color: #1a3a6b; }
 
-.dropdown {
-  display: none;
-  position: absolute;
-  right: 12px;
-  top: 36px;
-  background: #fff;
-  border: 1px solid #e2e6f0;
-  border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.13);
-  z-index: 200;
-  min-width: 190px;
-  overflow: hidden;
-}
-.dropdown.open { display: block; animation: dropIn .15s ease; }
+  /* ── Action "···" ── */
+  .action-cell { position: relative; text-align: right; padding-right: 16px; width: 60px; }
 
-@keyframes dropIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+  .action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: #8a94a6;
+    font-size: 18px;
+    line-height: 1;
+    transition: background .15s, color .15s;
+    letter-spacing: 1px;
+    font-family: inherit;
+  }
+  .action-btn:hover { background: #eef1f8; color: #1a3a6b; }
 
-.dd-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 14px;
-  font-size: 13px;
-  color: #2d3a50;
-  cursor: pointer;
-  transition: background .1s;
-  white-space: nowrap;
-  font-family: inherit;
-}
-.dd-item:hover { background: #f4f7ff; }
-.dd-item.danger { color: #dc2626; }
-.dd-item.danger:hover { background: #fff5f5; }
-.dd-item svg { opacity: .6; flex-shrink: 0; }
+  .dropdown {
+    display: none;
+    position: absolute;
+    right: 12px;
+    top: 36px;
+    background: #fff;
+    border: 1px solid #e2e6f0;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.13);
+    z-index: 200;
+    min-width: 190px;
+    overflow: hidden;
+  }
+  .dropdown.open { display: block; animation: dropIn .15s ease; }
 
-.dd-divider { height: 1px; background: #eef0f5; margin: 4px 0; }
+  @keyframes dropIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 
-/* ── Pagination (ngoài bảng) ── */
-.pagination-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-}
+  .dd-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    font-size: 13px;
+    color: #2d3a50;
+    cursor: pointer;
+    transition: background .1s;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .dd-item:hover { background: #f4f7ff; }
+  .dd-item.danger { color: #dc2626; }
+  .dd-item.danger:hover { background: #fff5f5; }
+  .dd-item svg { opacity: .6; flex-shrink: 0; }
 
-.page-info { font-size: 13px; color: #8a94a6; }
+  .dd-divider { height: 1px; background: #eef0f5; margin: 4px 0; }
 
-.page-controls { display: flex; align-items: center; gap: 4px; }
+  /* ── Pagination ── */
+  .pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0 0 0;
+    margin-top: auto; /* Đẩy sát xuống đáy của khối cha */
+    background: #F9F9FA;
+    border-top: 1px solid #eef0f5;
+  }
 
-.page-btn {
-  min-width: 32px;
-  height: 32px;
-  padding: 0 8px;
-  border: 1px solid #e2e6f0;
-  border-radius: 7px;
-  background: #fff;
-  font-size: 13px;
-  color: #2d3a50;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all .15s;
-  font-family: inherit;
-}
-.page-btn:hover:not(:disabled) { background: #f0f4ff; border-color: #b8c8f0; color: #1a3a6b; }
-.page-btn.active { background: #1a3a6b; color: #fff; border-color: #1a3a6b; font-weight: 700; }
-.page-btn:disabled { opacity: .4; cursor: default; }
-.page-btn.ellipsis { border-color: transparent; background: none; cursor: default; color: #aaa; pointer-events: none; }
+  .page-info { font-size: 13px; color: #8a94a6; }
+  .page-controls { display: flex; align-items: center; gap: 4px; }
 
-.page-size-wrap { display: flex; align-items: center; gap: 8px; }
-.page-size-select {
-  font-size: 13px;
-  padding: 5px 24px 5px 8px;
-  border: 1px solid #e2e6f0;
-  border-radius: 7px;
-  background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'><path d='m6 9 6 6 6-6'/></svg>") no-repeat right 6px center;
-  appearance: none;
-  color: #555;
-  outline: none;
-  cursor: pointer;
-  font-family: inherit;
-}
+  .page-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid #e2e6f0;
+    border-radius: 7px;
+    background: #fff;
+    font-size: 13px;
+    color: #2d3a50;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .15s;
+    font-family: inherit;
+  }
 
-#mainTable {height: 100%;}
+  .page-btn:hover:not(:disabled) { background: #f0f4ff; color: #1a3a6b; border-color: #b8c8f0; }
+  .page-btn.active { background: #1a3a6b; color: #fff; border-color: #1a3a6b; font-weight: 700; }
+  .page-btn:disabled { opacity: .4; cursor: default; }
+  .page-btn.ellipsis { border-color: transparent; background: none; cursor: default; color: #aaa; pointer-events: none; }
 
-  /* Scrollable main */
-  .main-scroll { overflow-y:auto; margin: 24px;}
-  thead {border-bottom: 1px solid #00000010; font-weight: bold; color: #1E2B58;}
+  .page-size-wrap { display: flex; align-items: center; gap: 8px; }
+  .page-size-select {
+    font-size: 13px;
+    padding: 5px 24px 5px 8px;
+    border: 1px solid #e2e6f0;
+    border-radius: 7px;
+    background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'><path d='m6 9 6 6 6-6'/></svg>") no-repeat right 6px center;
+    appearance: none;
+    color: #555;
+    outline: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  #tableBody td {
+    vertical-align: middle !important;
+    line-height: 1.5;
+  }
+
+  #tableBody td .contract-name, 
+  #tableBody td .sub-name {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  /* Định hình hàng ẩn ma trận */
+  .contract-row.empty-row { pointer-events: none; background: transparent !important; }
+  .contract-row.empty-row td { color: transparent !important; padding: 11px 14px !important; border-bottom: 1px solid #f0f2f7; }
+  .contract-row.empty-row td * { visibility: hidden !important; }
 </style>
 </head>
 <body class="flex h-screen overflow-hidden">
-    <div class="contract-dashboard" style="display: flex;flex-direction: column;overflow: hidden;padding: 24px;gap: 12px;">
+
+    <!-- Sử dụng định dạng tính toán chiều cao an toàn tuyệt đối với box-sizing -->
+    <div class="contract-dashboard" style="height: 100%; width: 100%; display: flex; flex-direction: column; padding: 24px; gap: 12px; overflow: hidden;">
 
         <!-- KPI Metric strip -->
-        <div class="flex-shrink-0" style="min-height:72px; margin: 0 0 16px 0; overflow: hidden;">
-          <div class="flex h-full gap-3">
-              <div class="metric-contract-col" style="border: 1px solid #00000010;">
+        <div class="flex-shrink-0" style="margin-bottom: 4px;">
+          <div style="display: flex; gap: 12px; width: 100%;">
+              <div class="metric-contract-col" style="border: 1px solid #00000010; background: #fff;">
                 <div class="metric-contract-label">Total number of contracts</div>
-                <div class="metric-contract-val w-full flex justify-start" style="color: #214DFF;">24</div>
-                <div class="metric-contract-sub mt-2 flex justify-start">All types of contracts</div>
+                <div class="metric-contract-val" style="color: #214DFF;">24</div>
+                <div class="metric-contract-sub">All types of contracts</div>
               </div>
-              <div class="metric-contract-col" style="border: 1px solid #00000010;">
+              <div class="metric-contract-col" style="border: 1px solid #00000010; background: #fff;">
                 <div class="metric-contract-label">In progress</div>
-                <div class="metric-contract-val w-full flex justify-start" style="color: #28A745;">12</div>
-                <div class="metric-contract-sub mt-2 flex justify-start">50% of the contracts</div>
+                <div class="metric-contract-val" style="color: #28A745;">12</div>
+                <div class="metric-contract-sub">50% of the contracts</div>
               </div>
-              <div class="metric-contract-col" style="border: 1px solid #00000010;">
+              <div class="metric-contract-col" style="border: 1px solid #00000010; background: #fff;">
                 <div class="metric-contract-label">Wait for approval</div>
-                <div class="metric-contract-val w-full flex justify-start" style="color: #FFC107;">3</div>
-                <div class="metric-contract-sub mt-2 flex justify-start">The contract has not been approved.</div>
+                <div class="metric-contract-val" style="color: #FFC107;">3</div>
+                <div class="metric-contract-sub">The contract has not been approved.</div>
               </div>
-              <div class="metric-contract-col" style="border: 1px solid #00000010;">
+              <div class="metric-contract-col" style="border: 1px solid #00000010; background: #fff;">
                 <div class="metric-contract-label">Total value</div>
-                <div class="metric-contract-val w-full flex justify-start" style="color: #28A745;">148.5B VND</div>
-                <div class="metric-contract-sub mt-2 flex justify-start">65% has been paid.</div>
+                <div class="metric-contract-val" style="color: #28A745;">148.5B VND</div>
+                <div class="metric-contract-sub">65% has been paid.</div>
               </div>
           </div>
         </div>
 
-        <!-- ── TOOLBAR (ngoài bảng) ── -->
-        <div class="toolbar">
-          <button class="tab-pill active" onclick="filterTab(this,'all')">All</button>
-          <button class="tab-pill" onclick="filterTab(this,'main')">Main contract</button>
-          <button class="tab-pill" onclick="filterTab(this,'sub')">Sub contract</button>
-          <button class="tab-pill" onclick="filterTab(this,'supplier')">Supplier contract</button>
-          <button class="tab-pill" onclick="filterTab(this,'other')">Other contract</button>
+        <!-- ── TOOLBAR ── -->
+        <div class="toolbar" style="flex-shrink: 0;">
+          <button class="tab-pill active" onclick="ContractModule.filterTab(this,'all')">All</button>
+          <button class="tab-pill" onclick="ContractModule.filterTab(this,'main')">Main contract</button>
+          <button class="tab-pill" onclick="ContractModule.filterTab(this,'sub')">Sub contract</button>
+          <button class="tab-pill" onclick="ContractModule.filterTab(this,'supplier')">Supplier contract</button>
+          <button class="tab-pill" onclick="ContractModule.filterTab(this,'other')">Other contract</button>
           <div class="toolbar-right">
-            <select class="sort-select" onchange="changeSort(this.value)">
+            <select class="sort-select" onchange="ContractModule.changeSort(this.value)">
               <option value="">Sort by...</option>
               <option value="name-asc">Name A–Z</option>
               <option value="name-desc">Name Z–A</option>
               <option value="items-desc">Items ↓</option>
             </select>
-            <input class="search-box" type="text" placeholder="Search by name or code..." oninput="onSearch(this.value)">
+            <input class="search-box" type="text" placeholder="Search by name or code..." oninput="ContractModule.onSearch(this.value)">
           </div>
         </div>
 
-        <!-- ── TABLE CARD ── -->
+        <!-- ── TABLE CARD (Sử dụng cấu trúc Flex ôm trọn vừa khít) ── -->
         <div class="table-card">
           <div class="table-scroll">
             <table id="mainTable">
@@ -382,21 +419,21 @@ tr.child-rows.open { display: table-row; }
           </div>
         </div>
 
-        <!-- ── PAGINATION (ngoài bảng) ── -->
+        <!-- ── PAGINATION (Luôn đứng vững ở đáy) ── -->
         <div class="pagination-bar">
+          <!-- Bọc vùng hiển thị định dạng mới -->
           <div class="page-size-wrap">
-            <span class="page-info">Rows per page</span>
-            <select class="page-size-select" onchange="changePageSize(this.value)">
-              <option value="10">10</option>
-              <option value="20">20</option>
-              <option value="50">50</option>
-            </select>
-            <span class="page-info" id="pageInfo"></span>
+              <!-- KHU VỰC THAY ĐỔI: Chuyển thành Page X of Y -->
+              <div class="page-goto-wrap" style="display: flex; align-items: center; gap: 6px; margin-left: 12px; font-size: 13px; color: #8a94a6;">
+                  <span>Page</span>
+                  <input type="number" id="pageGoToInput" 
+                        style="width: 45px; height: 28px; text-align: center; border: 1px solid #e2e6f0; border-radius: 6px; outline: none; font-family: inherit; font-size: 13px; color: #2d3a50;" 
+                        min="1" onkeypress="ContractModule.handlePageKey(event, this)">
+                  <span>of <strong id="totalPageDisplay" style="color: #2d3a50; font-weight: 600;">1</strong></span>
+              </div>
           </div>
           <div class="page-controls" id="pageControls"></div>
         </div>
-    </div>
-
     </div>
 
 </body>

@@ -1,1 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
+#tableBody td {
+    vertical-align: middle !important;
+    line-height: 1.5; /* Hoặc một con số cụ thể để đồng bộ text */
+}
+
+#tableBody td input[type="checkbox"].row-cb {
+    vertical-align: middle;
+    margin: 0; /* Khử margin mặc định của trình duyệt gây lệch ô */
+}
+
+/* Đảm bảo các badge cũng được căn chỉnh tương tự */
+#tableBody td .items-badge,
+#tableBody td .type-badge {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+}

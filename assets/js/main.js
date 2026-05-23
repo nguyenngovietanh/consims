@@ -1,35 +1,33 @@
-// =====================================================
-// consIMS — SPA Navigation Engine v3
-// Sidebar & topbar load 1 lần · nav + dash-tab swap mượt
-// =====================================================
+/**
+ * consIMS — SPA Navigation Engine v3
+ * Tối ưu hóa kiến trúc tải một lần (Single-load Sidebar/Topbar)
+ * Cơ chế chuyển đổi mượt ngữ cảnh Navigation & Dashboard Tabs
+ */
 
-// ── Map trang nav chính ──────────────────────────────
+// ── Cấu hình Bản đồ định tuyến (Routing Maps) ──────────────────────────
 const PAGE_CONTENT_MAP = {
-  "dashboard.html":         { module: null, tabs: "modules/dashboard/dashboard-tabs.html", hasCharts: false },
-  "contract.html":          { module: null, tabs: "contract.html", hasCharts: false },
-  "submission-review.html": { module: null, tabs: null, hasCharts: false },
-  "payment.html":           { module: null, tabs: null, hasCharts: false },
-  "help.html":              { module: null, tabs: null, hasCharts: false },
-  "settings.html":          { module: null, tabs: null, hasCharts: false },
+  "dashboard.html":         { tabs: "modules/dashboard/dashboard-tabs.html" },
+  "contract.html":          { tabs: "contract.html" },
+  "submission-review.html": { tabs: null },
+  "payment.html":           { tabs: null },
+  "help.html":              { tabs: null },
+  "settings.html":          { tabs: null },
 };
 
-// ── Map tab dashboard ────────────────────────────────
 const DASH_TAB_MAP = {
   "contract": { module: "modules/dashboard/contract-dashboard.html", hasCharts: true,  initFn: "initContractCharts" },
   "project":  { module: "modules/dashboard/project-dashboard.html",  hasCharts: true,  initFn: "initProjectCharts"  },
-  "company":  { module: "modules/dashboard/company-dashboard.html",  hasCharts: true, initFn: "initCompanyCharts"  }
+  "company":  { module: "modules/dashboard/company-dashboard.html",  hasCharts: true,  initFn: "initCompanyCharts"  }
 };
 
-// ── Context topbar theo trang nav ───────────────────
 const NAV_CONTEXT = {
-  "contract.html":          { title: "Contract",          desc: "Contract Administration & Tracking" },
-  "submission-review.html": { title: "Submission Review", desc: "Submission Review & Approval" },
-  "payment.html":           { title: "Payment",           desc: "Payment Management & Invoicing" },
-  "help.html":              { title: "Help",              desc: "Usage Guides & Support" },
-  "settings.html":          { title: "Settings",          desc: "Application & Account Customization" },
+  "contract.html":          { title: "Contract",           desc: "Contract Administration & Tracking" },
+  "submission-review.html": { title: "Submission Review",  desc: "Submission Review & Approval" },
+  "payment.html":           { title: "Payment",            desc: "Payment Management & Invoicing" },
+  "help.html":              { title: "Help",               desc: "Usage Guides & Support" },
+  "settings.html":          { title: "Settings",           desc: "Application & Account Customization" },
 };
 
-// ── Context topbar theo dashboard tab ───────────────
 const DASH_TAB_CONTEXT = {
   "contract": { title: "Contract Dashboard", desc: "Real-time overview of project performance and health" },
   "project":  { title: "Project Dashboard",  desc: "Project view (Multi contracts)" },
@@ -45,12 +43,13 @@ const PAGE_TITLES = {
   "settings.html":          "consIMS — Cài đặt",
 };
 
+// ── Biến trạng thái hệ thống (Core State) ──────────────────────────────
 let currentPage    = null;
 let currentDashTab = null;
 let isNavigating   = false;
 let isDashTabbing  = false;
 
-// ── Progress bar ─────────────────────────────────────
+// ── Thanh tiến trình (Top Progress Bar) ────────────────────────────────
 function progressStart() {
   const bar = document.getElementById("nav-progress");
   if (!bar) return;
@@ -58,6 +57,7 @@ function progressStart() {
   bar.style.cssText = "width:0%;opacity:1;";
   requestAnimationFrame(() => bar.classList.add("running"));
 }
+
 function progressDone() {
   const bar = document.getElementById("nav-progress");
   if (!bar) return;
@@ -66,7 +66,7 @@ function progressDone() {
   setTimeout(() => { bar.className = ""; bar.style.cssText = "width:0%;opacity:1;"; }, 500);
 }
 
-// ── Fetch HTML ───────────────────────────────────────
+// ── Truy xuất và Nạp Fragment (Asynchronous HTML Loaders) ──────────────
 async function fetchHTML(url) {
   if (!url) return null;
   try {
@@ -82,12 +82,13 @@ async function loadFragment(url, containerId) {
   return !!html;
 }
 
-// ── Fade helpers ─────────────────────────────────────
+// ── Hoạt họa (Micro-interactions & Fades) ────────────────────────────
 function fadeOut(el) {
   el.style.transition = "opacity 0.15s ease, transform 0.15s ease";
   el.style.opacity    = "0";
   el.style.transform  = "translateY(8px)";
 }
+
 function fadeIn(el) {
   requestAnimationFrame(() => requestAnimationFrame(() => {
     el.style.opacity   = "1";
@@ -95,11 +96,11 @@ function fadeIn(el) {
   }));
 }
 
-// ── Cập nhật topbar title/description với fade ───────
 function updateTopbarContext(title, desc) {
   const titleEl = document.getElementById("topbar-title");
   const descEl  = document.getElementById("topbar-desc");
   if (!titleEl || !descEl) return;
+  
   titleEl.style.opacity = "0";
   descEl.style.opacity  = "0";
   setTimeout(() => {
@@ -110,34 +111,45 @@ function updateTopbarContext(title, desc) {
   }, 200);
 }
 
-// ── Re-run scripts sau inject ────────────────────────
+// ── Quản lý Script Vòng đời (Script Evaluation Setup) ─────────────────
 function rerunScripts(container) {
-  container.querySelectorAll("script").forEach(old => {
-    const s = document.createElement("script");
-    [...old.attributes].forEach(a => s.setAttribute(a.name, a.value));
-    s.textContent = old.textContent;
-    old.parentNode?.replaceChild(s, old);
+  container.querySelectorAll("script").forEach(oldScript => {
+    const newScript = document.createElement("script");
+    [...oldScript.attributes].forEach(attr => newScript.setAttribute(attr.name, attr.value));
+    newScript.textContent = oldScript.textContent;
+    oldScript.parentNode?.replaceChild(newScript, oldScript);
   });
 }
 
-// ── Placeholder nav page ─────────────────────────────
+// ── Giao diện Tạm thời (Placeholders & Progress Renderers) ────────────
 function buildNavPlaceholder(page) {
   const labels = {
-    "contract.html":          { title: "Contract",          icon: "📄" },
-    "submission-review.html": { title: "Submission Review", icon: "📋" },
-    "payment.html":           { title: "Payment",           icon: "💳" },
-    "help.html":              { title: "Trợ giúp",          icon: "❓" },
-    "settings.html":          { title: "Cài đặt",           icon: "⚙️" },
+    "contract.html":          { title: "Contract",           icon: "📄" },
+    "submission-review.html": { title: "Submission Review",  icon: "📋" },
+    "payment.html":           { title: "Payment",            icon: "💳" },
+    "help.html":              { title: "Trợ giúp",           icon: "❓" },
+    "settings.html":          { title: "Cài đặt",            icon: "⚙️" },
   };
   const info = labels[page] || { title: page, icon: "📁" };
-  return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:16px;">
-    <div style="font-size:56px;opacity:.4;">${info.icon}</div>
-    <div style="font-size:20px;font-weight:700;color:#1a3a6b;">${info.title}</div>
-    <div style="font-size:14px;color:#8C98C2;">Trang này đang được phát triển</div>
-  </div>`;
+  return `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:16px;">
+      <div style="font-size:56px;opacity:.4;">${info.icon}</div>
+      <div style="font-size:20px;font-weight:700;color:#1a3a6b;">${info.title}</div>
+      <div style="font-size:14px;color:#8C98C2;">Trang này đang được phát triển</div>
+    </div>`;
 }
 
-// ── Sidebar nav: setup ───────────────────────────────
+function progressBar(percent, status) {
+  const colors = {
+    completed: '#22c55e', delayed: '#ef4444', atrisk: '#f97316', inactive: '#d1d5db', ontrack: '#22c55e'
+  };
+  return `
+    <div style="background:#e5e7eb; border-radius:3px; height:10px; min-width:80px;">
+      <div style="background:${colors[status] || '#3b82f6'}; height:100%; border-radius:3px; width:${percent}%;"></div>
+    </div>`;
+}
+
+// ── Trình xử lý Sự kiện & Định tuyến (Navigation & Tab Handlers) ──────
 function setupSidebarNav() {
   document.getElementById("sidebar-container")?.addEventListener("click", e => {
     const item = e.target.closest(".nav-item[data-page]");
@@ -153,15 +165,14 @@ function updateSidebarActive(page) {
   );
 }
 
-// ── Dashboard tab: setup ─────────────────────────────
 function setupDashTabSwitching() {
-  // Dùng event delegation trên toàn document (tabs được inject sau)
   document.addEventListener("click", async e => {
     const btn = e.target.closest("[data-dash-tab]");
     if (!btn) return;
     const tab = btn.getAttribute("data-dash-tab");
-    if (!tab || tab === currentDashTab || isDashTabbing) return;
-    await switchDashTab(tab);
+    if (tab && tab !== currentDashTab && !isDashTabbing) {
+      await switchDashTab(tab);
+    }
   });
 }
 
@@ -175,7 +186,7 @@ async function switchDashTab(tab) {
   if (isDashTabbing || tab === currentDashTab) return;
   isDashTabbing = true;
 
-  const config    = DASH_TAB_MAP[tab];
+  const config = DASH_TAB_MAP[tab];
   const contentEl = document.getElementById("page-content");
   if (!contentEl) { isDashTabbing = false; return; }
 
@@ -187,7 +198,6 @@ async function switchDashTab(tab) {
   if (ctx) updateTopbarContext(ctx.title, ctx.desc);
 
   const html = await fetchHTML(config?.module);
-
   contentEl.innerHTML = html || `<div style="display:flex;align-items:center;justify-content:center;height:60vh;font-size:14px;color:#8C98C2;">Không tải được nội dung.</div>`;
   contentEl.scrollTop = 0;
 
@@ -204,14 +214,14 @@ async function switchDashTab(tab) {
   isDashTabbing  = false;
 }
 
-// ── Core: chuyển trang nav chính ────────────────────
+// ── Lõi điều hướng Single Page Application (Core Router) ────────────────
 async function navigateTo(page, { pushState = true } = {}) {
   if (isNavigating || page === currentPage) return;
   isNavigating = true;
 
-  const config    = PAGE_CONTENT_MAP[page] || {};
+  const config = PAGE_CONTENT_MAP[page] || {};
   const contentEl = document.getElementById("page-content");
-  const tabsEl    = document.getElementById("dashboard-tabs");
+  const tabsEl = document.getElementById("dashboard-tabs");
   if (!contentEl) { isNavigating = false; return; }
 
   progressStart();
@@ -221,34 +231,32 @@ async function navigateTo(page, { pushState = true } = {}) {
   document.title = PAGE_TITLES[page] || "consIMS";
   if (pushState) history.pushState({ page }, "", "?page=" + page);
 
-  // Fetch tabs (nếu có)
+  // Tải cấu trúc Tabs đi kèm trang nếu có cấu hình định sẵn
   const tabsHTML = await fetchHTML(config.tabs);
   if (tabsEl) tabsEl.innerHTML = tabsHTML || "";
 
-  // Reset dash tab state khi rời dashboard
+  // BỐ TRÍ PHÂN LUỒNG CÁC TRANG CON KHÔNG THUỘC DASHBOARD KHỞI CHẠY CHÍNH
   if (page !== "dashboard.html") {
-    currentDashTab = null;
+    currentDashTab = null; 
     const ctx = NAV_CONTEXT[page];
     if (ctx) updateTopbarContext(ctx.title, ctx.desc);
     
-    // Nếu là trang contract.html, nạp nội dung thực tế
     if (page === "contract.html") {
-        const html = await fetchHTML(page);
-        if (html) {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            const mainContent = doc.querySelector('.contract-dashboard');
-            contentEl.innerHTML = mainContent ? mainContent.outerHTML : html;
-            
-            // Khởi tạo Module Contract sau khi DOM đã được push vào
-            if (window.ContractModule) {
-                setTimeout(() => window.ContractModule.init(), 50);
-            }
-        } else {
-            contentEl.innerHTML = buildNavPlaceholder(page);
+      const html = await fetchHTML(page);
+      if (html) {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const mainContent = doc.querySelector('.contract-dashboard');
+        contentEl.innerHTML = mainContent ? mainContent.outerHTML : html;
+        
+        // Kích hoạt Module Quản lý Hợp đồng Nghiệp vụ Thực tế
+        if (window.ContractModule) {
+          setTimeout(() => window.ContractModule.init(), 50);
         }
-    } else {
+      } else {
         contentEl.innerHTML = buildNavPlaceholder(page);
+      }
+    } else {
+      contentEl.innerHTML = buildNavPlaceholder(page);
     }
     
     contentEl.scrollTop = 0;
@@ -259,8 +267,8 @@ async function navigateTo(page, { pushState = true } = {}) {
     return;
   }
 
-  // Dashboard: load tab mặc định (contract) + update active
-  currentDashTab = null; // reset để switchDashTab chạy
+  // KHỞI TẠO ĐIỀU HƯỚNG TRANG CHỦ DASHBOARD (Mặc định nạp tab 'contract')
+  currentDashTab = null; 
   progressDone();
   await switchDashTab("contract");
 
@@ -268,7 +276,7 @@ async function navigateTo(page, { pushState = true } = {}) {
   isNavigating = false;
 }
 
-// ── Khởi động ────────────────────────────────────────
+// ── Khởi tạo Hệ thống Shell (System Initialization) ───────────────────
 async function initShell() {
   await Promise.all([
     loadFragment("modules/common/sidebar.html", "sidebar-container"),
@@ -282,28 +290,10 @@ async function initShell() {
   await navigateTo(startPage, { pushState: false });
 }
 
-// ── Back / Forward ───────────────────────────────────
+// Lắng nghe sự kiện điều hướng lịch sử trình duyệt (Back/Forward)
 window.addEventListener("popstate", e => {
-  const page = e.state?.page
-    || new URLSearchParams(window.location.search).get("page")
-    || "dashboard.html";
+  const page = e.state?.page || new URLSearchParams(window.location.search).get("page") || "dashboard.html";
   navigateTo(page, { pushState: false });
 });
 
 document.addEventListener("DOMContentLoaded", initShell);
-
-
-function progressBar(percent, status) {
-  const colors = {
-    completed: '#22c55e',  // xanh
-    delayed:   '#ef4444',  // đỏ
-    atrisk:    '#f97316',  // cam
-    inactive:  '#d1d5db',  // xám
-    ontrack:   '#22c55e',  // xanh
-  };
-  const color = colors[status] || '#3b82f6';
-  return `
-    <div style="background:#e5e7eb; border-radius:3px; height:10px; min-width:80px;">
-      <div style="background:${color}; height:100%; border-radius:3px; width:${percent}%;"></div>
-    </div>`;
-}
