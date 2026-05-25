@@ -17,3 +17,36 @@
     align-items: center;
     vertical-align: middle;
 }
+
+.details-grid-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.details-grid-table tbody {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.details-grid-table .info-row {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    vertical-align: middle;
+}
+
+.details-grid-table .info-row div {
+    vertical-align: middle;
+}
+
+.details-grid-table .info-row div:last-child {
+    text-align: right; /* Thêm đường viền giữa 2 cột */
+}
+
+.details-grid-table div {
+    display: table-cell !important;
+    padding: 8px 0 !important; /* Điều chỉnh padding để căn chỉnh tốt hơn */
+    vertical-align: top;
+    width: 50%; /* Vì cấu trúc render JS của bạn là chia đôi (2 cột) */
+}

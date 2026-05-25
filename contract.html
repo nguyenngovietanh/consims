@@ -350,8 +350,246 @@
   .contract-row.empty-row td * { visibility: hidden !important; }
 
   /* Contract overview drawer */
+  .custom-side-popup {
+      position: fixed;
+      top: 24px;
+      right: -700px; /* Ban đầu giấu popup về phía bên phải (Độ rộng popup giả định là 400px) */
+      bottom: 24px;
+      width: auto;
+      background-color: #ffffff;
+      box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+      border-radius: 8px; /* Bo góc cho đẹp mắt, tùy chọn */
+      z-index: 9999; /* Đảm bảo luôn nằm trên các thành phần khác */
+      transition: right 0.5s ease-in-out; /* Hiệu ứng trượt mượt mà */
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      margin-right: 24px; /* Tạo khoảng cách 24px với lề phải khi open */
+  }
 
+  /* Khi thêm class 'open', popup sẽ trượt vào màn hình */
+  .custom-side-popup.open {
+      right: 0px; 
+  }
 
+  /* CSS cho Header bên trong popup */
+  .side-popup-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e9ecef;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+  }
+
+  .side-popup-header h3 {
+      margin: 0;
+      font-size: 18px;
+      color: #333;
+  }
+
+  /* Nút đóng popup */
+  .side-popup-close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #888;
+      line-height: 1;
+  }
+  .side-popup-close-btn:hover {
+      color: #000;
+  }
+
+  /* Vùng chứa nội dung (hỗ trợ cuộn nếu nội dung quá dài) */
+  .side-popup-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+      color: #444;
+  }
+
+  .side-popup-body .info-card:last-child {
+      margin-top: 20px;
+  }
+
+  tbody .val {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  /* Lớp phủ màn hình tối (Overlay Backdrop) */
+.custom-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(15, 23, 42, 0.4);
+    z-index: 9998;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    
+    /* ĐẢM BẢO DÒNG NÀY: Mặc định tắt chuột đi */
+    pointer-events: none; 
+}
+
+.custom-popup-overlay.open {
+    opacity: 1;
+    /* ĐẢM BẢO DÒNG NÀY: Khi mở lên thì phải bật lại chuột để nhận click outside */
+    pointer-events: auto; 
+}
+
+/* Khung Side Popup nâng cấp hiệu ứng trượt */
+
+.custom-side-popup.open {
+    transform: translateX(0); /* Trượt nhẹ nhàng vào vị trí mong muốn */
+}
+
+/* Header Popup */
+.side-popup-header {
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f1f5f9;
+}
+.popup-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0;
+    line-height: 1.4;
+}
+.side-popup-close-btn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+.side-popup-close-btn:hover {
+    background-color: #f1f5f9;
+    color: #334155;
+}
+
+/* Nội dung cuộn bên trong */
+
+/* Thẻ thông tin màu trắng */
+.info-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+}
+.card-section-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #1E2B58;
+    /* text-transform: uppercase; */
+    letter-spacing: 0.5px;
+    margin: 0 0 16px 0;
+}
+
+/* Bảng phân tách lưới chi tiết */
+.details-grid-table {
+    width: 100%;
+    border-collapse: collapse;
+    display: flex;
+}
+.details-grid-table td {
+    width: 50%;
+    padding: 8px 0;
+    /* vertical-align: top; */
+    font-size: 12px;
+}
+.lbl {
+    color: #64748b;
+    font-weight: 600;
+    font-size: 12px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.val {
+    color: #0f172a;
+    font-weight: 600;
+    font-size: 12px;
+    padding-left: 2px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* Footer nút điều hướng cố định */
+.side-popup-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #f1f5f9;
+    background: #ffffff;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+.btn-outline-danger {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+.btn-outline-danger:hover {
+    background: #fff1f2;
+    border-color: #fecdd3;
+    color: #e11d48;
+}
+
+.btn-outline-danger svg path {
+  stroke: #1E2B58;
+}
+
+.btn-outline-danger:hover svg path {
+  stroke: #e11d48;
+}
+
+.btn-primary-dark {
+    background: #0f172a;
+    border: none;
+    color: #ffffff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s ease;
+}
+.btn-primary-dark:hover {
+    background: #1e293b;
+}
+.side-popup-footer .arrow {
+    font-size: 11px;
+}
+
+.info-row {
+  gap: 20px;
+}
 
 </style>
 </head>

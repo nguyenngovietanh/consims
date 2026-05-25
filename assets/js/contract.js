@@ -1,17 +1,20 @@
-// Tự động khởi tạo nếu DOM của contract table đã sẵn sàng (cho trường hợp load trực tiếp)
+// Tự động khởi tạo nếu DOM của contract table đã sẵn sàng
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('tableBody')) {
         ContractModule.init();
     }
 });
 
-// Lắng nghe sự kiện click để đóng dropdown
-document.addEventListener('click', () => {
+// Lắng nghe sự kiện click để đóng dropdown (Sửa đổi: Bỏ qua nếu click trúng overlay hoặc popup)
+document.addEventListener('click', (e) => {
+    if (e.target.id === 'popup-overlay' || e.target.closest('#contract-overview-sidebar')) {
+        return; 
+    }
     if (window.ContractModule) ContractModule.closeDropdown();
 });
+
 /**
  * consIMS — Contract Management Module
- * Sử dụng namespace ContractModule để tránh xung đột biến toàn cục
  */
 window.ContractModule = (function() {
     // ── Data ─────────────────────────────────────────────
@@ -144,11 +147,10 @@ window.ContractModule = (function() {
         };
     }
 
-    // ── Thay thế hàm getTopLevel cũ bằng hàm getVisibleRows mới ──────────────────
     function getVisibleRows() {
         let baseList = contracts;
  
-        // 1. Lọc theo Tab đường dẫn gốc
+        // Lọc theo Tab
         if (currentTab !== 'all') {
             if (currentTab === 'sub') {
                 baseList = [];
@@ -167,7 +169,7 @@ window.ContractModule = (function() {
             }
         }
 
-        // 2. Lọc theo từ khóa tìm kiếm Search
+        // Lọc theo từ khóa tìm kiếm
         if (searchQuery) {
             const q = searchQuery.toLowerCase();
             baseList = baseList.filter(c =>
@@ -177,19 +179,18 @@ window.ContractModule = (function() {
             );
         }
 
-        // 3. Sắp xếp Sort dữ liệu gốc
+        // Sắp xếp Sort
         if (sortMode === 'name-asc')   baseList = [...baseList].sort((a,b) => a.name.localeCompare(b.name));
         if (sortMode === 'name-desc')  baseList = [...baseList].sort((a,b) => b.name.localeCompare(a.name));
         if (sortMode === 'items-desc') baseList = [...baseList].sort((a,b) => b.items - a.items);
 
-        // 4. Biến đổi quan trọng: Tạo danh sách phẳng dựa trên trạng thái đóng/mở (Expanded)
+        // Biến đổi danh sách dựa trên phân cấp mở rộng
         if (currentTab === 'all' || currentTab === 'main') {
             const flattenedList = [];
             baseList.forEach(row => {
                 if (row.type === 'main') {
                     flattenedList.push({ ...row, isParentRow: true });
                     
-                    // Chỉ đưa các hàng con vào danh sách hiển thị khi hàng cha đang được mở rộng công khai
                     if (expandedIds.has(row.id)) {
                         if (row.sub && row.sub.length > 0) {
                             row.sub.forEach(s => flattenedList.push({ ...s, type: 'sub', isChildRow: true, parentId: row.id, childType: 'sub' }));
@@ -213,7 +214,6 @@ window.ContractModule = (function() {
         const tbody = document.getElementById('tableBody');
         if (!tbody) return;
 
-        // Xóa sạch dữ liệu cũ tránh lỗi trùng lặp
         tbody.innerHTML = '';
 
         const visibleList = getVisibleRows();
@@ -222,14 +222,12 @@ window.ContractModule = (function() {
         if (currentPage > totalPages) currentPage = totalPages;
 
         const start = (currentPage - 1) * pageSize;
-        // Cắt chính xác tối đa số dòng hiển thị thực tế trên UI
         const pagedRows = visibleList.slice(start, start + pageSize);
         const ic = ddIcons();
 
         pagedRows.forEach(row => {
             const tr = document.createElement('tr');
             
-            // Định dạng class dựa trên thuộc tính phẳng hóa dữ liệu công khai
             if (row.isChildRow) {
                 tr.className = `contract-row child-rows open ${row.childType}-row`;
                 tr.dataset.parent = row.parentId;
@@ -239,20 +237,19 @@ window.ContractModule = (function() {
                 tr.dataset.id = row.id;
             }
 
-            // Xử lý cột Tên hiển thị thụt dòng dựa vào phân cấp con
             let nameColumnHTML = `<span class="contract-name">${row.name}</span>`;
             if (row.isChildRow) {
                 const indentClass = row.childType === 'sub' ? 'sub-indent' : 'supplier-indent';
                 nameColumnHTML = `<div class="${indentClass}"><span class="sub-name">${row.name}</span></div>`;
             }
 
-            // Xử lý Dropdown Action riêng cho dòng Cha / Dòng con độc lập
             const isMain = row.type === 'main' && !row.isChildRow;
+            
             let actionMenuHTML = `
                 <button class="action-btn" onclick="ContractModule.toggleDropdown(event,${row.id})">···</button>
                 <div class="dropdown" id="dd-${row.id}">
                     ${isMain ? `<div class="dd-item" onclick="ContractModule.toggleExpand(event,${row.id});ContractModule.closeDropdown()">${ic.sub} Sub contract</div>` : ''}
-                    <div class="dd-item" onclick="ContractModule.closeDropdown()">${ic.overview} Contract overview</div>
+                    <div class="dd-item" onclick="ContractModule.openPopup(event, ${row.id}); ContractModule.closeDropdown()">${ic.overview} Contract overview</div>
                     <div class="dd-item" onclick="ContractModule.closeDropdown()">${ic.user} Assign user</div>
                     <div class="dd-divider"></div>
                     <div class="dd-item danger" onclick="ContractModule.closeDropdown()">${ic.remove} Remove user</div>
@@ -271,26 +268,23 @@ window.ContractModule = (function() {
             tbody.appendChild(tr);
         });
 
-        // Vòng lặp bù dòng trống (Bảo đảm luôn luôn render đủ số hàng quy định trên giao diện)
+        // Hàng trống bù chân trang
         const remainingRows = pageSize - pagedRows.length;
         for (let i = 0; i < remainingRows; i++) {
             const emptyRow = document.createElement('tr');
             emptyRow.className = 'contract-row empty-row'; 
             emptyRow.innerHTML = `
                 <td><input type="checkbox" class="cb row-cb"></td>
-                <td><span class="contract-name">Ghost Row Data</span></td>
-                <td><span class="items-badge">+0</span></td>
-                <td><span class="type-badge type-other">Other contract</span></td>
-                <td style="font-size:12px;">CODE</td>
-                <td>Contractor Name</td>
-                <td class="action-cell">
-                    <button class="action-btn">···</button>
-                </td>
+                <td><span class="contract-name" style="color:#cbd5e1;">-</span></td>
+                <td><span class="items-badge" style="opacity:0;">+0</span></td>
+                <td><span class="type-badge" style="opacity:0;">Other contract</span></td>
+                <td style="font-size:12px;color:#cbd5e1;">-</td>
+                <td style="color:#cbd5e1;">-</td>
+                <td class="action-cell"><button class="action-btn" style="opacity:0;">···</button></td>
             `;
             tbody.appendChild(emptyRow);
         }
 
-        // ── ĐÃ ĐỔI: Đồng bộ thông số hiển thị cho cấu trúc "Page X of Y" mới ──
         const inputEl = document.getElementById('pageGoToInput');
         if (inputEl) {
             inputEl.value = currentPage;
@@ -411,7 +405,6 @@ window.ContractModule = (function() {
             render();
         },
 
-        // ── ĐÃ THÊM: Hàm tiếp nhận sự kiện nhấn phím Enter trên ô nhập số trang ──
         handlePageKey: function(event, input) {
             if (event.key === 'Enter') {
                 let targetPage = parseInt(input.value, 10);
@@ -426,6 +419,162 @@ window.ContractModule = (function() {
                 input.value = targetPage;
                 this.goToPage(targetPage);
             }
+        },
+
+        // ── HÀM MỞ POPUP CHUẨN (ĐÃ FIX CONTEXT & EVENT) ──
+        openPopup: function(event, rowId) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+
+            let overlay = document.getElementById('popup-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'popup-overlay';
+                overlay.className = 'custom-popup-overlay';
+                document.body.appendChild(overlay);
+            }
+
+            let sidePopup = document.getElementById('contract-overview-sidebar');
+            if (!sidePopup) {
+                sidePopup = document.createElement('div');
+                sidePopup.id = 'contract-overview-sidebar';
+                sidePopup.className = 'custom-side-popup';
+                document.body.appendChild(sidePopup);
+            }
+
+            let targetRow = contracts.find(c => c.id === rowId);
+            if (!targetRow) {
+                for (let c of contracts) {
+                    if (c.sub) { targetRow = c.sub.find(s => s.id === rowId); if (targetRow) break; }
+                    if (c.supplier) { targetRow = c.supplier.find(s => s.id === rowId); if (targetRow) break; }
+                }
+            }
+
+            const contractTitle = targetRow ? targetRow.name : `Chi tiết hợp đồng (#${rowId})`;
+            const contractorName = targetRow ? targetRow.contractor : 'Đang cập nhật';
+
+            sidePopup.innerHTML = `
+                <div class="side-popup-header">
+                    <h3 class="popup-title" style="color: #1E2B58; font-weight: 700;">${contractTitle}</h3>
+                    <button class="side-popup-close-btn" id="js-close-sidebar-btn" type="button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                
+                <div class="side-popup-body">
+                    <div class="info-card" style="overflow: hidden;">
+                        <h4 class="card-section-title">Contract performance</h4>
+                        <table class="details-grid-table">
+                            <div class="info-row flex justify-between w-full">
+                                <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">Contract type:</span> <span class="val">Sub contract</span></div>
+                                <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">Currency:</span> <span class="val">VND</span></div>
+                            </div>
+                            <div class="info-row flex justify-between w-full">
+                                <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">Client:</span> <span class="val">${contractorName}</span></div>
+                                <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">Budget:</span> <span class="val">1.500.000.000 VND</span></div>
+                            </div>
+                            <div class="info-row flex justify-between w-full">
+                                <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">Started:</span> <span class="val">2025-05-14</span></div>
+                                <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">Deadline:</span> <span class="val">2026-07-14</span></div>
+                            </div>
+                        </table>
+                        <div style="height:1px;background:#f0f2f7;margin:12px 0;"></div>
+                        <table class="details-grid-table">
+                            <div class="info-row flex justify-between w-full">
+                                <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">CPI:</span> <span class="val">1.09</span></div>
+                                <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">CMI:</span> <span class="val">+100.000.000 VND</span></div>
+                            </div>
+                            <div class="info-row flex justify-between w-full">
+                                <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">SPI:</span> <span class="val">0.92</span></div>
+                                <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">DPI:</span> <span class="val">-25 ngày</span></div>
+                            </div>
+                            <div class="info-row flex justify-between w-full">
+                                <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">BWSP:</span> <span class="val">-100.000.000 VND</span></div>
+                                <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">EAC:</span> <span class="val">1.376.146.789 VND</span></div>
+                            </div>
+                            <div class="info-row flex justify-between w-full">
+                                <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">BCWS:</span> <span class="val">1.300.000.000 VND</span></div>
+                                <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">ETC:</span> <span class="val">276.146.789 VND</span></div>
+                            </div>
+                        </table>
+                    </div>
+
+                    <div class="info-card">
+                        <h4 class="card-section-title">Planned vs Performed</h4>
+                        <div class="chart-placeholder">
+                            <div style="text-align:center; color:#a0aec0; padding: 40px 0; font-size:13px; border: 1px dashed #e2e8f0; border-radius:6px;">
+                                [ Biểu đồ đường xu hướng Planned Value vs Performed Value ]
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="side-popup-footer">
+                    <button class="btn-outline-danger" type="button">
+                        Delete member 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M11.3202 10.3209L11.3202 4.72033L5.63884 4.72041M11.3202 4.72033L4.72051 11.32" stroke="#1E2B58" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <button class="btn-primary-dark" type="button">
+                        Assign member 
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11.3202 10.3209L11.3202 4.72033L5.63884 4.72041M11.3202 4.72033L4.72051 11.32" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+
+            const self = this;
+
+            // Đóng khi click lớp phủ tối
+            overlay.onclick = function(e) {
+                e.stopPropagation();
+                self.closePopup();
+            };
+
+            // Đóng khi click nút Close X
+            const closeBtn = document.getElementById('js-close-sidebar-btn');
+            if (closeBtn) {
+                closeBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    self.closePopup();
+                };
+            }
+
+            // Chặn lan truyền click từ nội dung popup trắng ra ngoài
+            sidePopup.onclick = function(e) {
+                e.stopPropagation();
+            };
+
+            overlay.style.display = 'block';
+            sidePopup.style.display = 'flex';
+
+            setTimeout(() => {
+                overlay.classList.add('open');
+                sidePopup.classList.add('open');
+            }, 30);
+        },
+
+        // ── HÀM ĐÓNG DUY NHẤT (ĐÃ GỠ TRÙNG LẶP & ĐỒNG BỘ HIỆU ỨNG TẮT OVERLAY) ──
+        closePopup: function() {
+            const overlay = document.getElementById('popup-overlay');
+            const sidePopup = document.getElementById('contract-overview-sidebar');
+            
+            if (overlay) overlay.classList.remove('open');
+            if (sidePopup) sidePopup.classList.remove('open');
+
+            // Chờ 350ms chạy hết hiệu ứng lướt CSS transition mới cho ẩn hẳn DOM display
+            setTimeout(() => {
+                if (overlay && !overlay.classList.contains('open')) {
+                    overlay.style.display = 'none';
+                }
+                if (sidePopup && !sidePopup.classList.contains('open')) {
+                    sidePopup.style.display = 'none';
+                }
+            }, 350);
         }
     };
 })();
