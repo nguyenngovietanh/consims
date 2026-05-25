@@ -7,7 +7,7 @@
 // ── Cấu hình Bản đồ định tuyến (Routing Maps) ──────────────────────────
 const PAGE_CONTENT_MAP = {
   "dashboard.html":         { tabs: "modules/dashboard/dashboard-tabs.html" },
-  "contract.html":          { tabs: "contract.html" },
+  "contract.html":          { tabs: null },
   "submission-review.html": { tabs: null },
   "payment.html":           { tabs: null },
   "help.html":              { tabs: null },
@@ -84,15 +84,19 @@ async function loadFragment(url, containerId) {
 
 // ── Hoạt họa (Micro-interactions & Fades) ────────────────────────────
 function fadeOut(el) {
-  el.style.transition = "opacity 0.15s ease, transform 0.15s ease";
+  el.style.transition = "opacity 0.2s ease, transform 0.2s ease";
   el.style.opacity    = "0";
-  el.style.transform  = "translateY(8px)";
+  el.style.transform  = "translateY(6px)";
 }
 
 function fadeIn(el) {
+  el.style.transition = "none";
+  el.style.opacity    = "0";
+  el.style.transform  = "translateY(-6px)";
   requestAnimationFrame(() => requestAnimationFrame(() => {
-    el.style.opacity   = "1";
-    el.style.transform = "translateY(0)";
+    el.style.transition = "opacity 0.35s ease, transform 0.35s ease";
+    el.style.opacity    = "1";
+    el.style.transform  = "translateY(0)";
   }));
 }
 
@@ -100,7 +104,9 @@ function updateTopbarContext(title, desc) {
   const titleEl = document.getElementById("topbar-title");
   const descEl  = document.getElementById("topbar-desc");
   if (!titleEl || !descEl) return;
-  
+
+  titleEl.style.transition = "opacity 0.2s ease";
+  descEl.style.transition  = "opacity 0.2s ease";
   titleEl.style.opacity = "0";
   descEl.style.opacity  = "0";
   setTimeout(() => {
@@ -197,6 +203,9 @@ async function switchDashTab(tab) {
   const ctx = DASH_TAB_CONTEXT[tab];
   if (ctx) updateTopbarContext(ctx.title, ctx.desc);
 
+  // Chờ fadeOut xong (200ms) rồi mới swap content
+  await new Promise(r => setTimeout(r, 200));
+
   const html = await fetchHTML(config?.module);
   contentEl.innerHTML = html || `<div style="display:flex;align-items:center;justify-content:center;height:60vh;font-size:14px;color:#8C98C2;">Không tải được nội dung.</div>`;
   contentEl.scrollTop = 0;
@@ -231,26 +240,48 @@ async function navigateTo(page, { pushState = true } = {}) {
   document.title = PAGE_TITLES[page] || "consIMS";
   if (pushState) history.pushState({ page }, "", "?page=" + page);
 
-  // Tải cấu trúc Tabs đi kèm trang nếu có cấu hình định sẵn
-  const tabsHTML = await fetchHTML(config.tabs);
-  if (tabsEl) tabsEl.innerHTML = tabsHTML || "";
+  // Ẩn/hiện dashboard-tabs tuỳ theo trang
+  if (tabsEl) {
+    if (page === "dashboard.html") {
+      tabsEl.style.display = "";
+      const tabsHTML = await fetchHTML(config.tabs);
+      tabsEl.innerHTML = tabsHTML || "";
+    } else {
+      tabsEl.style.display = "none";
+      tabsEl.innerHTML = "";
+    }
+  }
 
   // BỐ TRÍ PHÂN LUỒNG CÁC TRANG CON KHÔNG THUỘC DASHBOARD KHỞI CHẠY CHÍNH
   if (page !== "dashboard.html") {
-    currentDashTab = null; 
+    currentDashTab = null;
     const ctx = NAV_CONTEXT[page];
     if (ctx) updateTopbarContext(ctx.title, ctx.desc);
-    
+
+    // Chờ fadeOut xong rồi mới fetch + swap content
+    await new Promise(r => setTimeout(r, 200));
+
     if (page === "contract.html") {
       const html = await fetchHTML(page);
       if (html) {
-        const doc = new DOMParser().parseFromString(html, 'text/html');
-        const mainContent = doc.querySelector('.contract-dashboard');
-        contentEl.innerHTML = mainContent ? mainContent.outerHTML : html;
-        
-        // Kích hoạt Module Quản lý Hợp đồng Nghiệp vụ Thực tế
+        const doc = new DOMParser().parseFromString(html, "text/html");
+
+        // Inject CSS từ contract.html vào <head> (chỉ một lần, tránh duplicate)
+        if (!document.getElementById("contract-page-styles")) {
+          const styleTag = document.createElement("style");
+          styleTag.id = "contract-page-styles";
+          let cssText = "";
+          doc.querySelectorAll("style").forEach(s => cssText += s.textContent);
+          styleTag.textContent = cssText;
+          document.head.appendChild(styleTag);
+        }
+
+        const mainContent = doc.querySelector(".contract-dashboard");
+        contentEl.innerHTML = mainContent ? mainContent.outerHTML : buildNavPlaceholder(page);
+
+        // Kích hoạt ContractModule sau khi DOM đã paint
         if (window.ContractModule) {
-          setTimeout(() => window.ContractModule.init(), 50);
+          requestAnimationFrame(() => requestAnimationFrame(() => window.ContractModule.init()));
         }
       } else {
         contentEl.innerHTML = buildNavPlaceholder(page);
@@ -258,7 +289,7 @@ async function navigateTo(page, { pushState = true } = {}) {
     } else {
       contentEl.innerHTML = buildNavPlaceholder(page);
     }
-    
+
     contentEl.scrollTop = 0;
     progressDone();
     fadeIn(contentEl);
@@ -268,7 +299,7 @@ async function navigateTo(page, { pushState = true } = {}) {
   }
 
   // KHỞI TẠO ĐIỀU HƯỚNG TRANG CHỦ DASHBOARD (Mặc định nạp tab 'contract')
-  currentDashTab = null; 
+  currentDashTab = null;
   progressDone();
   await switchDashTab("contract");
 
