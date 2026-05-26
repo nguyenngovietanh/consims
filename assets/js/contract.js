@@ -423,6 +423,7 @@ window.ContractModule = (function() {
 
         // ── HÀM MỞ POPUP CHUẨN (ĐÃ FIX CONTEXT & EVENT) ──
         // ── HÀM MỞ POPUP CHUẨN (ĐÃ FIX TOÀN BỘ XUNG ĐỘT CÚ PHÁP & LOGIC) ──
+        // ── HÀM MỞ POPUP CÓ HIỆU ỨNG LOADER KHI RENDER NỘI DUNG ──
         activeChartInstance: null,
 
         openPopup: function(event, rowId) {
@@ -458,7 +459,6 @@ window.ContractModule = (function() {
             const contractTitle = targetRow ? targetRow.name : `Chi tiết hợp đồng (#${rowId})`;
             const contractorName = targetRow ? targetRow.contractor : 'Đang cập nhật';
 
-            // Định nghĩa dữ liệu thật (Mockup data mẫu tương ứng cho từng row)
             const contractData = {
                 id: rowId,
                 months: ['2/2026', '3/2026', '4/2026', '5/2026', '6/2026', '7/2026'],
@@ -466,7 +466,7 @@ window.ContractModule = (function() {
                 performedValues: [45, 62, 60, 85, 85, 75]  
             };
 
-            // Đổ dữ liệu HTML sạch vào sidebar 
+            // 1. Render giao diện Khung trống kèm hiệu ứng Loader trước
             sidePopup.innerHTML = `
                 <div class="side-popup-header">
                     <h3 class="popup-title" style="color: #1E2B58; font-weight: 700;">${contractTitle}</h3>
@@ -475,7 +475,12 @@ window.ContractModule = (function() {
                     </button>
                 </div>
                 
-                <div class="side-popup-body">
+                <div class="sidebar-loader-wrapper" id="js-sidebar-loader">
+                    <div class="sidebar-spinner"></div>
+                    <div class="sidebar-loader-text" style="margin-top: 16px;">Loading performance data...</div>
+                </div>
+
+                <div class="side-popup-body" id="js-sidebar-real-content" style="opacity: 0; pointer-events: none; width: 100%; height: 100%;">
                     <div class="info-card" style="overflow: hidden;">
                         <h4 class="card-section-title">Contract performance</h4>
                         
@@ -524,7 +529,7 @@ window.ContractModule = (function() {
                     </div>
                 </div>
 
-                <div class="side-popup-footer">
+                <div class="side-popup-footer" id="js-sidebar-footer" style="opacity: 0; pointer-events: none;">
                     <button class="btn-outline-danger" type="button">
                         Delete member 
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -542,7 +547,7 @@ window.ContractModule = (function() {
 
             const self = this;
 
-            // Xử lý đóng mở UI bằng CSS Classes
+            // Đóng mở sự kiện
             overlay.onclick = function(e) { e.stopPropagation(); self.closePopup(); };
             const closeBtn = document.getElementById('js-close-sidebar-btn');
             if (closeBtn) { closeBtn.onclick = function(e) { e.stopPropagation(); self.closePopup(); }; }
@@ -551,14 +556,39 @@ window.ContractModule = (function() {
             overlay.style.display = 'block';
             sidePopup.style.display = 'flex';
 
-            // Kích hoạt animation lướt
+            // Kích hoạt animation slide-in cho Sidebar
             setTimeout(() => {
                 overlay.classList.add('open');
                 sidePopup.classList.add('open');
-                
-                // QUAN TRỌNG: Vẽ biểu đồ khi phần tử canvas đã hiển thị hoàn toàn trên giao diện
-                self.renderRealChart(contractData);
             }, 50);
+
+            // 2. GIẢ LẬP THỜI GIAN CHỜ API (800ms) RỒI MỚI ẨN LOADER & HIỆN DATA THẬT
+            setTimeout(() => {
+                const loaderEl = document.getElementById('js-sidebar-loader');
+                const bodyContentEl = document.getElementById('js-sidebar-real-content');
+                const footerEl = document.getElementById('js-sidebar-footer');
+
+                if (loaderEl) {
+                    loaderEl.style.opacity = '0';
+                    setTimeout(() => loaderEl.remove(), 300); // Gỡ hẳn loader ra khỏi DOM sau khi ẩn
+                }
+
+                // Hiện nội dung thật bằng hiệu ứng fade-in mượt mà
+                if (bodyContentEl) {
+                    bodyContentEl.style.opacity = '1';
+                    bodyContentEl.style.pointerEvents = 'auto';
+                    bodyContentEl.classList.add('fade-in-content');
+                }
+                if (footerEl) {
+                    footerEl.style.opacity = '1';
+                    footerEl.style.pointerEvents = 'auto';
+                    footerEl.classList.add('fade-in-content');
+                }
+
+                // QUAN TRỌNG: Chỉ khi nội dung hiển thị ra, ta mới vẽ đồ thị lên canvas
+                self.renderRealChart(contractData);
+
+            }, 1000); // 1000ms là thời gian xoay lý tưởng, bạn có thể tăng giảm tùy ý
         },
 
         // Định nghĩa hàm vẽ chart (Đã tích hợp toàn bộ config resize legend và nét đứt grid mượt mà)
@@ -611,12 +641,12 @@ window.ContractModule = (function() {
                         legend: {
                             position: 'bottom',
                             labels: {
-                                boxWidth: 5,         // Thu nhỏ đường kính chấm tròn lại cho tinh tế
-                                boxHeight: 5,        // Giữ tỉ lệ tròn đều 7x7px
-                                usePointStyle: true, // Ép icon chú thích thành dạng chấm tròn
+                                boxWidth: 5,         
+                                boxHeight: 5,       
+                                usePointStyle: true, 
                                 pointStyle: 'circle',
                                 padding: 32,  
-                                marginBottom: 4,       // Tăng khoảng cách chiều ngang giữa các nhãn chú thích
+                                marginBottom: 4,    
                                 font: {
                                     family: 'Nunito Sans, sans-serif', 
                                     size: 12,        
@@ -644,7 +674,7 @@ window.ContractModule = (function() {
                                 drawTicks: false   
                             },
                             border: {
-                                dash: [5, 5],      // Biến các đường Grid ngang thành nét đứt thanh mảnh
+                                dash: [5, 5],      
                                 display: false     
                             }
                         },

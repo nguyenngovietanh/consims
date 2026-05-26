@@ -43,3 +43,48 @@
 .details-grid-table .info-row div:last-child {
     text-align: right; /* Thêm đường viền giữa 2 cột */
 }
+
+/* Khối bao bọc Loader nằm giữa Sidebar */
+.sidebar-loader-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    z-index: 10;
+    transition: opacity 0.3s ease;
+}
+
+/* Spinner xoay tròn sử dụng màu chủ đạo thương hiệu #1E2B58 */
+.sidebar-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3.5px solid #f3f3f3;
+    border-top: 3.5px solid #1E2B58;
+    border-radius: 50%;
+    animation: sidebar-spin 0.8s linear infinite;
+}
+
+.sidebar-loader-text {
+    font-size: 13px;
+    color: #64748B;
+    font-weight: 500;
+}
+
+/* Hiệu ứng hiển thị nội dung mượt sau khi load xong */
+.fade-in-content {
+    animation: fadeInSidebar 0.4s ease forwards;
+}
+
+@keyframes sidebar-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeInSidebar {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
