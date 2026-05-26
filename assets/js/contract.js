@@ -140,10 +140,9 @@ window.ContractModule = (function() {
 
     function ddIcons() {
         return {
-            overview: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10.3866 7.99995C10.3866 9.31995 9.31995 10.3866 7.99995 10.3866C6.67995 10.3866 5.61328 9.31995 5.61328 7.99995C5.61328 6.67995 6.67995 5.61328 7.99995 5.61328C9.31995 5.61328 10.3866 6.67995 10.3866 7.99995Z" stroke="#2d3a50" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 13C10.5253 13 12.8789 11.7432 14.5171 9.56798C15.161 8.71601 15.161 7.28399 14.5171 6.43202C12.8789 4.2568 10.5253 3 8 3C5.47471 3 3.1211 4.2568 1.48288 6.43202C0.839039 7.28399 0.839039 8.71601 1.48288 9.56798C3.1211 11.7432 5.47471 13 8 13Z" stroke="#2d3a50" stroke-width="0.905825" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-            user:     `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M7.99996 7.99967C9.84091 7.99967 11.3333 6.50729 11.3333 4.66634C11.3333 2.82539 9.84091 1.33301 7.99996 1.33301C6.15901 1.33301 4.66663 2.82539 4.66663 4.66634C4.66663 6.50729 6.15901 7.99967 7.99996 7.99967Z" stroke="#2d3a50" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.27332 14.6667C2.27332 12.0867 4.83998 10 7.99998 10C8.63998 10 9.25999 10.0867 9.83999 10.2467" stroke="#2d3a50" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.6667 11.9997C14.6667 12.213 14.64 12.4197 14.5867 12.6197 seawork"/><path d="M14.5267 12.8863 14.42 13.1463 14.28 13.373C13.82 14.1463 12.9734 14.6663 12 14.6663C11.3134 14.6663 10.6934 14.4063 10.2267 13.9797C10.0267 13.8063 9.85337 13.5997 9.72003 13.373C9.47337 12.973 9.33337 12.4997 9.33337 11.9997C9.33337 11.2797 9.62004 10.6197 10.0867 10.1397C10.5734 9.63969 11.2534 9.33301 12 9.33301C12.7867 9.33301 13.5 9.67302 13.98 10.2197C14.4067 10.693 14.6667 11.3197 14.6667 11.9997Z" stroke="#2d3a50" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.9934 11.9873H11.0067" stroke="#2d3a50" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.0002 11.0137V13.007" stroke="#2d3a50" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-            sub:      `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"> <path d="M6.00004 14.6663H10C13.3334 14.6663 14.6667 13.333 14.6667 9.99967V5.99967C14.6667 2.66634 13.3334 1.33301 10 1.33301H6.00004C2.66671 1.33301 1.33337 2.66634 1.33337 5.99967V9.99967C1.33337 13.333 2.66671 14.6663 6.00004 14.6663Z" stroke="#2d3a50" stroke-linecap="round" stroke-linejoin="round"/> <path d="M11.6666 11.3867H10.4332" stroke="#2d3a50" stroke-linecap="round" stroke-linejoin="round"/> <path d="M8.64671 11.3867H4.33337" stroke="#2d3a50" stroke-linecap="round" stroke-linejoin="round"/> <path d="M11.6666 8.87988H7.97998" stroke="#2d3a50" stroke-linecap="round" stroke-linejoin="round"/> <path d="M6.18004 8.87988H4.33337" stroke="#2d3a50" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-            remove:   `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M7.9467 14.6667C11.6134 14.6667 14.6134 11.6667 14.6134 8.00001C14.6134 4.33334 11.6134 1.33334 7.9467 1.33334C4.28003 1.33334 1.28003 4.33334 1.28003 8.00001C1.28003 11.6667 4.28003 14.6667 7.9467 14.6667Z" stroke="#DC2626" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.28003 8H10.6134" stroke="#DC2626" stroke-linecap="round" stroke-linejoin="round"/></svg>`,  
+            sub:      `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6.00004 14.6663H10C13.3334 14.6663 14.6667 13.333 14.6667 9.99967V5.99967C14.6667 2.66634 13.3334 1.33301 10 1.33301H6.00004C2.66671 1.33301 1.33337 2.66634 1.33337 5.99967V9.99967C1.33337 13.333 2.66671 14.6663 6.00004 14.6663Z" stroke="#1E2B58" stroke-linecap="round" stroke-linejoin="round"/> <path d="M11.6666 11.3867H10.4332" stroke="#" stroke-linecap="round" stroke-linejoin="round"/> <path d="M8.64671 11.3867H4.33337" stroke="#1E2B58" stroke-linecap="round" stroke-linejoin="round"/> <path d="M11.6666 8.87988H7.97998" stroke="#1E2B58" stroke-linecap="round" stroke-linejoin="round"/> <path d="M6.18004 8.87988H4.33337" stroke="#1E2B58" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+            overview: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10.3866 7.99995C10.3866 9.31995 9.31995 10.3866 7.99995 10.3866C6.67995 10.3866 5.61328 9.31995 5.61328 7.99995C5.61328 6.67995 6.67995 5.61328 7.99995 5.61328C9.31995 5.61328 10.3866 6.67995 10.3866 7.99995Z" stroke="#1E2B58" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 13C10.5253 13 12.8789 11.7432 14.5171 9.56798C15.161 8.71601 15.161 7.28399 14.5171 6.43202C12.8789 4.2568 10.5253 3 8 3C5.47471 3 3.1211 4.2568 1.48288 6.43202C0.839039 7.28399 0.839039 8.71601 1.48288 9.56798C3.1211 11.7432 5.47471 13 8 13Z" stroke="#1E2B58" stroke-width="0.905825" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+            list:     `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8.00008 8.00001C9.84103 8.00001 11.3334 6.50763 11.3334 4.66668C11.3334 2.82573 9.84103 1.33334 8.00008 1.33334C6.15913 1.33334 4.66675 2.82573 4.66675 4.66668C4.66675 6.50763 6.15913 8.00001 8.00008 8.00001Z" stroke="#1E2B58" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.7268 14.6667C13.7268 12.0867 11.1601 10 8.0001 10C4.8401 10 2.27344 12.0867 2.27344 14.6667" stroke="#1E2B58" stroke-linecap="round" stroke-linejoin="round"/></svg>`
         };
     }
 
@@ -250,9 +249,7 @@ window.ContractModule = (function() {
                 <div class="dropdown" id="dd-${row.id}">
                     ${isMain ? `<div class="dd-item" onclick="ContractModule.toggleExpand(event,${row.id});ContractModule.closeDropdown()">${ic.sub} Sub contract</div>` : ''}
                     <div class="dd-item" onclick="ContractModule.openPopup(event, ${row.id}); ContractModule.closeDropdown()">${ic.overview} Contract overview</div>
-                    <div class="dd-item" onclick="ContractModule.closeDropdown()">${ic.user} Assign user</div>
-                    <div class="dd-divider"></div>
-                    <div class="dd-item danger" onclick="ContractModule.closeDropdown()">${ic.remove} Remove user</div>
+                    <div class="dd-item" onclick="ContractModule.openMemberList(event, ${row.id}); ContractModule.closeDropdown()">${ic.list} Member list</div>
                 </div>
             `;
 
@@ -426,6 +423,24 @@ window.ContractModule = (function() {
         // ── HÀM MỞ POPUP CÓ HIỆU ỨNG LOADER KHI RENDER NỘI DUNG ──
         activeChartInstance: null,
 
+        // ── STATE & DATA CHO MEMBER POPUP (SINGLE SOURCE OF TRUTH) ──
+        currentMemberTab: 'assign', 
+        selectedRoles: [], 
+        searchQuery: '',   
+        selectedMemberIds: [], // Quản lý danh sách ID member đang được tick chọn
+
+        allMembersData: [
+            { id: 'm1', name: 'Trần Thị Thanh Thuý', email: 'thuytttt@centralcons.vn', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', selectedRoles: [] },
+            { id: 'm2', name: 'Nguyễn Hoàng Long', email: 'longnh@centralcons.vn', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', selectedRoles: [] },
+            { id: 'm3', name: 'Võ Kim Bản', email: 'banvk@centralcons.vn', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', selectedRoles: [] },
+            { id: 'm4', name: 'Nguyễn Huỳnh Phú Vinh', email: 'vinhnhp@centralcons.vn', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150', selectedRoles: [] },
+            { id: 'm5', name: 'Trương Thảo Vy', email: 'vytt@centralcons.vn', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', selectedRoles: [] },
+            { id: 'm6', name: 'Đoàn Nhất Quang', email: 'quangdn@centralcons.vn', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150', selectedRoles: [] },
+            { id: 'm7', name: 'Huỳnh Vĩnh Quang', email: 'quanghv@centralcons.vn', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150', selectedRoles: [] },
+            { id: 'm8', name: 'Nguyễn Thị Tiểu Duy', email: 'duyntt@centralcons.vn', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150', selectedRoles: [] }
+        ],
+
+        // ── HÀM MỞ POPUP CONTRACT OVERVIEW GỐC ──
         openPopup: function(event, rowId) {
             if (event) {
                 event.stopPropagation();
@@ -466,7 +481,6 @@ window.ContractModule = (function() {
                 performedValues: [45, 62, 60, 85, 85, 75]  
             };
 
-            // 1. Render giao diện Khung trống kèm hiệu ứng Loader trước
             sidePopup.innerHTML = `
                 <div class="side-popup-header">
                     <h3 class="popup-title" style="color: #1E2B58; font-weight: 700;">${contractTitle}</h3>
@@ -483,7 +497,6 @@ window.ContractModule = (function() {
                 <div class="side-popup-body" id="js-sidebar-real-content" style="opacity: 0; pointer-events: none; width: 100%; height: 100%;">
                     <div class="info-card" style="overflow: hidden;">
                         <h4 class="card-section-title">Contract performance</h4>
-                        
                         <div class="details-grid-table">
                             <div class="info-row flex justify-between w-full">
                                 <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">Contract type:</span> <span class="val">Sub contract</span></div>
@@ -498,9 +511,7 @@ window.ContractModule = (function() {
                                 <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">Deadline:</span> <span class="val">2026-07-14</span></div>
                             </div>
                         </div>
-
                         <div style="height:1px;background:#f0f2f7;margin:12px 0;"></div>
-                        
                         <div class="details-grid-table">
                             <div class="info-row flex justify-between w-full">
                                 <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">CPI:</span> <span class="val">1.09</span></div>
@@ -530,24 +541,12 @@ window.ContractModule = (function() {
                 </div>
 
                 <div class="side-popup-footer" id="js-sidebar-footer" style="opacity: 0; pointer-events: none;">
-                    <button class="btn-outline-danger" type="button">
-                        Delete member 
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <path d="M11.3202 10.3209L11.3202 4.72033L5.63884 4.72041M11.3202 4.72033L4.72051 11.32" stroke="#1E2B58" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-                    <button class="btn-primary-dark" type="button">
-                        Assign member 
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M11.3202 10.3209L11.3202 4.72033L5.63884 4.72041M11.3202 4.72033L4.72051 11.32" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
+                    <button class="btn-outline-danger" type="button">Delete member</button>
+                    <button class="btn-primary-dark" type="button">Assign member</button>
                 </div>
             `;
 
             const self = this;
-
-            // Đóng mở sự kiện
             overlay.onclick = function(e) { e.stopPropagation(); self.closePopup(); };
             const closeBtn = document.getElementById('js-close-sidebar-btn');
             if (closeBtn) { closeBtn.onclick = function(e) { e.stopPropagation(); self.closePopup(); }; }
@@ -556,154 +555,446 @@ window.ContractModule = (function() {
             overlay.style.display = 'block';
             sidePopup.style.display = 'flex';
 
-            // Kích hoạt animation slide-in cho Sidebar
-            setTimeout(() => {
-                overlay.classList.add('open');
-                sidePopup.classList.add('open');
-            }, 50);
+            setTimeout(() => { overlay.classList.add('open'); sidePopup.classList.add('open'); }, 50);
 
-            // 2. GIẢ LẬP THỜI GIAN CHỜ API (800ms) RỒI MỚI ẨN LOADER & HIỆN DATA THẬT
             setTimeout(() => {
                 const loaderEl = document.getElementById('js-sidebar-loader');
                 const bodyContentEl = document.getElementById('js-sidebar-real-content');
                 const footerEl = document.getElementById('js-sidebar-footer');
 
-                if (loaderEl) {
-                    loaderEl.style.opacity = '0';
-                    setTimeout(() => loaderEl.remove(), 300); // Gỡ hẳn loader ra khỏi DOM sau khi ẩn
-                }
+                if (loaderEl) { loaderEl.style.opacity = '0'; setTimeout(() => loaderEl.remove(), 300); }
+                if (bodyContentEl) { bodyContentEl.style.opacity = '1'; bodyContentEl.style.pointerEvents = 'auto'; bodyContentEl.classList.add('fade-in-content'); }
+                if (footerEl) { footerEl.style.opacity = '1'; footerEl.style.pointerEvents = 'auto'; footerEl.classList.add('fade-in-content'); }
 
-                // Hiện nội dung thật bằng hiệu ứng fade-in mượt mà
-                if (bodyContentEl) {
-                    bodyContentEl.style.opacity = '1';
-                    bodyContentEl.style.pointerEvents = 'auto';
-                    bodyContentEl.classList.add('fade-in-content');
-                }
-                if (footerEl) {
-                    footerEl.style.opacity = '1';
-                    footerEl.style.pointerEvents = 'auto';
-                    footerEl.classList.add('fade-in-content');
-                }
-
-                // QUAN TRỌNG: Chỉ khi nội dung hiển thị ra, ta mới vẽ đồ thị lên canvas
                 self.renderRealChart(contractData);
-
-            }, 1000); // 1000ms là thời gian xoay lý tưởng, bạn có thể tăng giảm tùy ý
+            }, 800);
         },
 
-        // Định nghĩa hàm vẽ chart (Đã tích hợp toàn bộ config resize legend và nét đứt grid mượt mà)
         renderRealChart: function(data) {
             const chartCanvas = document.getElementById('realContractChart');
             if (!chartCanvas) return;
             const ctx = chartCanvas.getContext('2d');
 
-            if (this.activeChartInstance) {
-                this.activeChartInstance.destroy();
-            }
+            if (this.activeChartInstance) { this.activeChartInstance.destroy(); }
 
-            // Khởi tạo Chart.js kế thừa dữ liệu thật và áp dụng styling resize chuẩn UI
             this.activeChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: data.months,
                     datasets: [
-                        {
-                            label: 'Planned Value',
-                            data: data.plannedValues,
-                            borderColor: '#52c41a',
-                            backgroundColor: '#52c41a',
-                            tension: 0.4,
-                            borderWidth: 2,
-                            pointRadius: 3,
-                            bottom: 3
-                        },
-                        {
-                            label: 'Performed Value',
-                            data: data.performedValues,
-                            borderColor: '#ff9c6e',
-                            backgroundColor: '#ff9c6e',
-                            tension: 0.4,
-                            borderWidth: 2,
-                            pointRadius: 3,
-                            bottom: 3
-                        }
+                        { label: 'Planned Value', data: data.plannedValues, borderColor: '#52c41a', backgroundColor: '#52c41a', tension: 0.4, borderWidth: 2, pointRadius: 3 },
+                        { label: 'Performed Value', data: data.performedValues, borderColor: '#ff9c6e', backgroundColor: '#ff9c6e', tension: 0.4, borderWidth: 2, pointRadius: 3 }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    layout: {
-                        padding: {
-                            bottom: 10 
-                        }
-                    },
                     plugins: {
                         legend: {
                             position: 'bottom',
-                            labels: {
-                                boxWidth: 5,         
-                                boxHeight: 5,       
-                                usePointStyle: true, 
-                                pointStyle: 'circle',
-                                padding: 32,  
-                                marginBottom: 4,    
-                                font: {
-                                    family: 'Nunito Sans, sans-serif', 
-                                    size: 12,        
-                                    weight: '500'
-                                },
-                                color: '#64748B'     
-                            }
-                        },
-                        tooltip: {
-                            cornerRadius: 6,
-                            padding: 10
+                            labels: { boxWidth: 5, boxHeight: 5, usePointStyle: true, pointStyle: 'circle', padding: 32, color: '#64748B' }
                         }
                     },
                     scales: {
-                        y: {
-                            min: 0,
-                            max: 100, 
-                            ticks: { 
-                                stepSize: 20, 
-                                color: '#94A3B8',
-                                font: { size: 11 }
-                            },
-                            grid: { 
-                                color: '#F1F5F9', 
-                                drawTicks: false   
-                            },
-                            border: {
-                                dash: [5, 5],      
-                                display: false     
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: '#94A3B8',
-                                font: { size: 11 }
-                            },
-                            grid: { 
-                                display: false 
-                            },
-                            border: {
-                                display: false 
-                            }
-                        }
+                        y: { min: 0, max: 100, ticks: { stepSize: 20, color: '#94A3B8' }, grid: { color: '#F1F5F9' }, border: { dash: [5, 5], display: false } },
+                        x: { ticks: { color: '#94A3B8' }, grid: { display: false }, border: { display: false } }
                     }
                 }
             });
         },
 
-        // ── HÀM ĐÓNG MODAL SIDEBAR (ĐÃ LỌC BỎ TRÙNG LẶP HÀM) ──
+        // ── HÀM MỞ POPUP MEMBER LIST ──
+        openMemberList: function(event, rowId) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+
+            let overlay = document.getElementById('popup-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'popup-overlay';
+                overlay.className = 'custom-popup-overlay';
+                document.body.appendChild(overlay);
+            }
+
+            let sidePopup = document.getElementById('contract-overview-sidebar');
+            if (!sidePopup) {
+                sidePopup = document.createElement('div');
+                sidePopup.id = 'contract-overview-sidebar';
+                sidePopup.className = 'custom-side-popup';
+                document.body.appendChild(sidePopup);
+            }
+
+            this.currentMemberTab = 'assign';
+            this.selectedRoles = [];
+            this.searchQuery = '';
+            this.selectedMemberIds = []; 
+
+            // Khai báo mã SVG chuẩn chỉnh từ thiết kế của bạn
+            // Thêm lại biến này để nút Confirm dưới Footer không bị báo lỗi vỡ hàm
+            const svgWhiteCheck = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:inline-block; vertical-align:middle;"><path d="M6.36695 10.1L12.0169 4.45C12.1503 4.31667 12.3058 4.25 12.4836 4.25C12.6614 4.25 12.8169 4.31667 12.9503 4.45C13.0836 4.58333 13.1503 4.74178 13.1503 4.92533C13.1503 5.10889 13.0836 5.26711 12.9503 5.4L6.83362 11.5333C6.70028 11.6667 6.54473 11.7333 6.36695 11.7333C6.18917 11.7333 6.03362 11.6667 5.90028 11.5333L3.03362 8.66667C2.90028 8.53333 2.83628 8.37511 2.84162 8.192C2.84695 8.00889 2.9165 7.85044 3.05028 7.71667C3.18406 7.58289 3.34251 7.51622 3.52562 7.51667C3.70873 7.51711 3.86695 7.58378 4.00028 7.71667L6.36695 10.1Z" fill="white"/></svg>`;
+            const svgRoleCheck = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:inline-block; vertical-align:middle;"><path d="M6.36695 10.1L12.0169 4.45C12.1503 4.31667 12.3058 4.25 12.4836 4.25C12.6614 4.25 12.8169 4.31667 12.9503 4.45C13.0836 4.58333 13.1503 4.74178 13.1503 4.92533C13.1503 5.10889 13.0836 5.26711 12.9503 5.4L6.83362 11.5333C6.70028 11.6667 6.54473 11.7333 6.36695 11.7333C6.18917 11.7333 6.03362 11.6667 5.90028 11.5333L3.03362 8.66667C2.90028 8.53333 2.83628 8.37511 2.84162 8.192C2.84695 8.00889 2.9165 7.85044 3.05028 7.71667C3.18406 7.58289 3.34251 7.51622 3.52562 7.51667C3.70873 7.51711 3.86695 7.58378 4.00028 7.71667L6.36695 10.1Z" fill="#1E2B58"/></svg>`;
+            const svgCancelX = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:inline-block; vertical-align:middle;"><path d="M12 4L4 12M12 12L4 4" stroke="black" stroke-width="1.33333" stroke-linecap="round"/></svg>`;
+            sidePopup.innerHTML = `
+                <div class="side-popup-header" style="border-bottom: none; padding-bottom: 8px;">
+                    <h3 class="popup-title" style="color: #334155; font-weight: 700; font-size: 18px;">Members list</h3>
+                    <button class="side-popup-close-btn" id="js-close-sidebar-btn" type="button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+
+                <div class="sidebar-loader-wrapper" id="js-member-loader">
+                    <div class="sidebar-spinner"></div>
+                    <div class="sidebar-loader-text" style="margin-top: 16px;">Loading members data...</div>
+                </div>
+
+                <div class="side-popup-body" id="js-member-real-content" style="opacity: 0; pointer-events: none; display: flex; flex-direction: column; height: 100%; padding-top: 0; overflow: hidden;">
+                    <div class="member-tabs">
+                        <div class="member-tab-item active" id="tab-assign-btn" onclick="ContractModule.switchMemberSubTab('assign')">Assign member</div>
+                        <div class="member-tab-item" id="tab-remove-btn" onclick="ContractModule.switchMemberSubTab('remove')">Remove member</div>
+                    </div>
+
+                    <div class="member-search-box">
+                        <span class="member-search-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </span>
+                        <input type="text" placeholder="Search name or email..." id="js-member-search-input" oninput="ContractModule.handleMemberSearch(this.value)">
+                    </div>
+
+                    <div class="role-pills-container" id="js-member-roles-container">
+                        <span style="font-size: 13px; font-weight: 700; color: #334155; width: 100%; margin-bottom: 4px;">Roles</span>
+                        <button type="button" class="role-pill" id="role-R" onclick="ContractModule.toggleRoleOption('Responsible')">Responsible <span class="chk-icon" style="display:none; margin-left:6px;">${svgRoleCheck}</span></button>
+                        <button type="button" class="role-pill" id="role-A" onclick="ContractModule.toggleRoleOption('Approved')">Approved <span class="chk-icon" style="display:none; margin-left:6px;">${svgRoleCheck}</span></button>
+                        <button type="button" class="role-pill" id="role-C" onclick="ContractModule.toggleRoleOption('Consulted')">Consulted <span class="chk-icon" style="display:none; margin-left:6px;">${svgRoleCheck}</span></button>
+                        <button type="button" class="role-pill" id="role-I" onclick="ContractModule.toggleRoleOption('Be informed')">Be informed <span class="chk-icon" style="display:none; margin-left:6px;">${svgRoleCheck}</span></button>
+                    </div>
+
+                    <div class="table-scroll-wrapper" style="flex: 1; overflow-y: auto; position: relative; margin-top: 8px; border: 1px solid #E2E8F0; border-radius: 8px;">
+                        <div class="member-list-table-header" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; position: sticky; top: 0; background: #ECEFFA; z-index: 10; border-bottom: 1px solid #E2E8F0;">
+                            <span style="font-weight: 700; color: #475569; font-size: 13px;">Member</span>
+                            <div id="js-member-cb-all" onclick="ContractModule.toggleSelectAllMembers()" style="width: 18px; height: 18px; border: 1px solid #CBD5E1; border-radius: 4px; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; margin-left: 4px;"></div>
+                        </div>
+                        <div id="js-member-list-rows-container"></div>
+                    </div>
+                </div>
+
+                <div class="side-popup-footer" id="js-member-footer" style="opacity: 0; pointer-events: none; display: flex; justify-content: flex-end; gap: 12px; border-top: none; padding-top: 12px;">
+                    <button class="btn-outline-danger" style="border: 1px solid #CBD5E1; background: #fff; color: #000; padding: 8px 16px; border-radius: 6px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;" type="button" onclick="ContractModule.closePopup()">
+                        Cancel ${svgCancelX} 
+                    </button>
+                    <button class="btn-primary-dark" style="background: #1E2B58; color: #fff; padding: 8px 18px; border-radius: 6px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; border: none; cursor: pointer;" type="button" onclick="ContractModule.handleMemberConfirm()">
+                        Confirm ${svgWhiteCheck} 
+                    </button>
+                </div>
+            `;
+
+            const self = this;
+            overlay.onclick = function(e) { e.stopPropagation(); self.closePopup(); };
+            const closeBtn = document.getElementById('js-close-sidebar-btn');
+            if (closeBtn) { closeBtn.onclick = function(e) { e.stopPropagation(); self.closePopup(); }; }
+            sidePopup.onclick = function(e) { e.stopPropagation(); };
+
+            overlay.style.display = 'block';
+            sidePopup.style.display = 'flex';
+
+            setTimeout(() => { overlay.classList.add('open'); sidePopup.classList.add('open'); }, 50);
+
+            setTimeout(() => {
+                const loaderEl = document.getElementById('js-member-loader');
+                const bodyContentEl = document.getElementById('js-member-real-content');
+                const footerEl = document.getElementById('js-member-footer');
+
+                if (loaderEl) { loaderEl.style.opacity = '0'; setTimeout(() => loaderEl.remove(), 300); }
+                if (bodyContentEl) { bodyContentEl.style.opacity = '1'; bodyContentEl.style.pointerEvents = 'auto'; bodyContentEl.classList.add('fade-in-content'); }
+                if (footerEl) { footerEl.style.opacity = '1'; footerEl.style.pointerEvents = 'auto'; footerEl.classList.add('fade-in-content'); }
+
+                self.renderMembersData();
+            }, 800);
+        },
+
+        switchMemberSubTab: function(tabName) {
+            this.currentMemberTab = tabName;
+            const btnAssign = document.getElementById('tab-assign-btn');
+            const btnRemove = document.getElementById('tab-remove-btn');
+            const rolesContainer = document.getElementById('js-member-roles-container');
+
+            if (tabName === 'assign') { 
+                btnAssign.classList.add('active'); 
+                btnRemove.classList.remove('active');
+                if (rolesContainer) rolesContainer.style.display = 'flex'; 
+            } else { 
+                btnRemove.classList.add('active'); 
+                btnAssign.classList.remove('active');
+                if (rolesContainer) rolesContainer.style.display = 'none'; 
+            }
+            this.renderMembersData();
+        },
+
+        handleMemberSearch: function(value) {
+            this.searchQuery = value.trim().toLowerCase();
+            this.renderMembersData();
+        },
+
+        toggleRoleOption: function(roleName) {
+            const index = this.selectedRoles.indexOf(roleName);
+            let btnId = '';
+            if (roleName === 'Responsible') btnId = 'role-R';
+            else if (roleName === 'Approved') btnId = 'role-A';
+            else if (roleName === 'Consulted') btnId = 'role-C';
+            else if (roleName === 'Be informed') btnId = 'role-I';
+
+            const roleBtn = document.getElementById(btnId);
+            if (!roleBtn) return;
+            const checkIcon = roleBtn.querySelector('.chk-icon');
+
+            if (index > -1) {
+                // Trạng thái BỎ CHỌN
+                this.selectedRoles.splice(index, 1);
+                roleBtn.classList.remove('active');
+                roleBtn.style.color = ''; // Trả về màu chữ mặc định của class
+                if (checkIcon) checkIcon.style.display = 'none';
+            } else {
+                // Trạng thái ĐƯỢC CHỌN
+                this.selectedRoles.push(roleName);
+                roleBtn.classList.add('active');
+                roleBtn.style.color = '#1E2B58'; // Ép màu chữ sang màu xanh đen thương hiệu
+                if (checkIcon) checkIcon.style.display = 'inline-block';
+            }
+        },
+
+        toggleSelectMemberRow: function(memberId) {
+            const index = this.selectedMemberIds.indexOf(memberId);
+            if (index > -1) {
+                this.selectedMemberIds.splice(index, 1);
+            } else {
+                this.selectedMemberIds.push(memberId);
+            }
+            this.renderMembersData();
+        },
+
+        toggleSelectAllMembers: function() {
+            const filteredMembers = this.allMembersData.filter(member => {
+                return member.name.toLowerCase().includes(this.searchQuery) || member.email.toLowerCase().includes(this.searchQuery);
+            });
+
+            const allFilteredAreChecked = filteredMembers.every(m => this.selectedMemberIds.includes(m.id));
+
+            filteredMembers.forEach(m => {
+                const idx = this.selectedMemberIds.indexOf(m.id);
+                if (allFilteredAreChecked) {
+                    if (idx > -1) this.selectedMemberIds.splice(idx, 1);
+                } else {
+                    if (idx === -1) this.selectedMemberIds.push(m.id);
+                }
+            });
+
+            this.renderMembersData();
+        },
+
+        // ── RENDER DATA BẢNG MEMBER ──
+        renderMembersData: function() {
+            const container = document.getElementById('js-member-list-rows-container');
+            if (!container) return;
+
+            const filteredMembers = this.allMembersData.filter(member => {
+                return member.name.toLowerCase().includes(this.searchQuery) || member.email.toLowerCase().includes(this.searchQuery);
+            });
+
+            container.innerHTML = '';
+            if (filteredMembers.length === 0) {
+                container.innerHTML = `<div style="padding: 30px; text-align: center; color: #94A3B8; font-size: 13px;">No members matching your search.</div>`;
+                return;
+            }
+
+            const svgBlueCheck = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:block;"><path d="M6.36695 10.1L12.0169 4.45C12.1503 4.31667 12.3058 4.25 12.4836 4.25C12.6614 4.25 12.8169 4.31667 12.9503 4.45C13.0836 4.58333 13.1503 4.74178 13.1503 4.92533C13.1503 5.10889 13.0836 5.26711 12.9503 5.4L6.83362 11.5333C6.70028 11.6667 6.54473 11.7333 6.36695 11.7333C6.18917 11.7333 6.03362 11.6667 5.90028 11.5333L3.03362 8.66667C2.90028 8.53333 2.83628 8.37511 2.84162 8.192C2.84695 8.00889 2.9165 7.85044 3.05028 7.71667C3.18406 7.58289 3.34251 7.51622 3.52562 7.51667C3.70873 7.51711 3.86695 7.58378 4.00028 7.71667L6.36695 10.1Z" fill="#1E2B58"/></svg>`;
+
+            // ==================== BẮT ĐẦU ĐOẠN THAY THẾ CHÍNH XÁC ====================
+            filteredMembers.forEach((member) => {
+                const isChecked = this.selectedMemberIds.includes(member.id);
+                const row = document.createElement('div');
+                row.className = 'member-item-row';
+                row.style.flexDirection = 'row-reverse';
+                row.style.display = 'flex';
+                row.style.alignItems = 'stretch'; 
+                row.style.padding = '12px 16px';
+                row.style.borderBottom = '1px solid #F1F5F9';
+
+                // 1. XỬ LÝ LỌC LẤY CHỮ CÁI ĐẦU (R, A, C, I):
+                // Nếu role là "Be informed" thì lấy chữ "I", còn lại lấy ký tự đầu tiên của chuỗi
+                const rolesBadge = member.selectedRoles.length > 0 
+                    ? member.selectedRoles.map(r => {
+                        const letter = r === 'Be informed' ? 'I' : r.charAt(0);
+                        return `<span style="display:inline-flex; align-items:center; justify-content:center; background:#EEF2F6; color:#1E2B58; font-size:10px; width:16px; height:16px; border-radius:50%; font-weight:700; margin-left:6px; vertical-align:middle;">${letter}</span>`;
+                    }).join('')
+                    : '';
+
+                // Ô bọc checkbox độc lập căn bottom cố định theo dòng chảy dữ liệu
+                const checkboxHTML = isChecked 
+                    ? `<div style="display: flex; align-items: flex-end; padding-bottom: 5px;"><div onclick="ContractModule.toggleSelectMemberRow('${member.id}')" style="width:18px; height:18px; border:1px solid #CBD5E1; border-radius:4px; background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-left:4px; transition: all 0.15s;">${svgBlueCheck}</div></div>`
+                    : `<div style="display: flex; align-items: flex-end; padding-bottom: 5px;"><div onclick="ContractModule.toggleSelectMemberRow('${member.id}')" style="width:18px; height:18px; border:1px solid #CBD5E1; border-radius:4px; background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-left:4px; transition: all 0.15s;"></div></div>`;
+
+                // 2. TÁI CẤU TRÚC HTML: Đưa chuỗi ${rolesBadge} lên nằm chung trong thẻ h5 ngay cạnh chữ Tên
+                row.innerHTML = `
+                    ${checkboxHTML}
+                    <div style="display: flex; align-items: flex-start; gap: 12px; flex: 1;">
+                        <img src="${member.avatar}" class="member-avatar" alt="avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                        <div class="member-info-meta" style="display: flex; flex-direction: column;">
+                            <h5 style="margin: 0; font-size: 14px; font-weight: 600; color: #334155; line-height: 1.4; display: flex; align-items: center; flex-wrap: wrap;">
+                                ${member.name} ${rolesBadge}
+                            </h5>
+                            <p style="margin: 2px 0 0 0; font-size: 12px; color: #64748B; line-height: 1.4;">${member.email}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+            // ==================== KẾT THÚC ĐOẠN THAY THẾ CHÍNH XÁC ====================
+
+            // Đoạn code đồng bộ ô Check All bên dưới giữ nguyên...
+            const cbAll = document.getElementById('js-member-cb-all');
+            if (cbAll) {
+                const allFilteredAreChecked = filteredMembers.every(m => this.selectedMemberIds.includes(m.id));
+                if (allFilteredAreChecked && filteredMembers.length > 0) {
+                    cbAll.style.border = '1px solid #CBD5E1';
+                    cbAll.innerHTML = svgBlueCheck;
+                } else {
+                    cbAll.style.border = '1px solid #CBD5E1';
+                    cbAll.innerHTML = '';
+                }
+            }
+        },
+
+        // ── HÀM HIỂN THỊ TOAST NOTIFICATION ĐỘNG THEO LOẠI THÔNG BÁO ──
+        showToastNotification: function(type, title, description) {
+            let container = document.getElementById('js-custom-toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'js-custom-toast-container';
+                container.className = 'custom-toast-container';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = 'custom-toast-card';
+
+            // Định nghĩa các Icon SVG lớn chính xác từ yêu cầu của bạn
+            let iconSvg = '';
+            let progressColor = '#28A745'; // Mặc định là xanh lá (Success)
+
+            if (type === 'success') {
+                progressColor = '#28A745';
+                iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none"><g clip-path="url(#clip0_781_2974)"><path d="M29.0653 16.1481C29.0653 23.2818 23.2823 29.0647 16.1486 29.0647C9.0149 29.0647 3.23193 23.2818 3.23193 16.1481C3.23193 9.01435 9.0149 3.23138 16.1486 3.23138C23.2823 3.23138 29.0653 9.01435 29.0653 16.1481ZM14.6545 22.9873L24.2379 13.404C24.5633 13.0786 24.5633 12.5509 24.2379 12.2255L23.0594 11.047C22.734 10.7215 22.2063 10.7215 21.8808 11.047L14.0653 18.8625L10.4164 15.2136C10.0909 14.8882 9.56329 14.8882 9.23782 15.2136L8.05933 16.3921C7.73391 16.7175 7.73391 17.2452 8.05933 17.5706L13.476 22.9873C13.8015 23.3127 14.3291 23.3127 14.6545 22.9873V22.9873Z" fill="#28A745"/></g><defs><clipPath id="clip0_781_2974"><rect width="26.6667" height="26.6667" fill="white" transform="translate(2.81494 2.81476)"/></clipPath></defs></svg>`;
+            } else if (type === 'warning') {
+                progressColor = '#FFC107'; // Sử dụng mã màu vàng hổ phách mới yêu cầu
+                iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M14.3483 5.80499C15.0481 4.47548 16.9521 4.47548 17.652 5.80499L27.8932 25.264C28.5474 26.5069 27.6464 28.0001 26.2418 28.0003H5.75841C4.35386 28.0001 3.45285 26.5069 4.10704 25.264L14.3483 5.80499ZM15.9996 22.2669C15.4107 22.2671 14.9332 22.7443 14.9332 23.3333C14.9332 23.9223 15.4107 24.3995 15.9996 24.3997C16.5887 24.3997 17.066 23.9224 17.066 23.3333C17.066 22.7442 16.5887 22.2669 15.9996 22.2669ZM15.9996 12.9339C15.4107 12.9341 14.9332 13.4113 14.9332 14.0003V20.0003C14.9334 20.5892 15.4108 21.0665 15.9996 21.0667C16.5886 21.0667 17.0659 20.5893 17.066 20.0003V14.0003C17.066 13.4112 16.5887 12.9339 15.9996 12.9339Z" fill="#FECA5C"/></svg>`;
+            } else if (type === 'danger' || type === 'remove') {
+                progressColor = '#DC3545'; // Sử dụng mã màu đỏ đậm mới yêu cầu
+                iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none"><g clip-path="url(#clip0_781_2971)"><path d="M6.73701 25.5905C5.46354 24.3606 4.44778 22.8893 3.74899 21.2626C3.05021 19.6359 2.68239 17.8863 2.66701 16.1159C2.65162 14.3455 2.98898 12.5898 3.65939 10.9511C4.3298 9.31252 5.31984 7.82383 6.57175 6.57193C7.82365 5.32003 9.31234 4.32999 10.951 3.65957C12.5896 2.98916 14.3453 2.65181 16.1157 2.66719C17.8861 2.68257 19.6357 3.05039 21.2624 3.74918C22.8891 4.44796 24.3604 5.46373 25.5903 6.7372C28.0191 9.25189 29.363 12.6199 29.3327 16.1159C29.3023 19.6118 27.9 22.956 25.4279 25.4281C22.9558 27.9002 19.6117 29.3025 16.1157 29.3328C12.6197 29.3632 9.25171 28.0193 6.73701 25.5905ZM18.0417 16.1639C18.0375 16.1639 18.0354 16.1588 18.0384 16.1558L21.4266 12.7677C21.6348 12.5594 21.6348 12.2217 21.4266 12.0134L20.3015 10.8883C20.0929 10.6798 19.7547 10.6801 19.5466 10.889L16.4465 14C16.2904 14.1567 16.0367 14.1569 15.8803 14.0005L12.7675 10.8877C12.5592 10.6794 12.2215 10.6794 12.0132 10.8877L10.8875 12.0134C10.6792 12.2217 10.6792 12.5594 10.8875 12.7677L14.0008 15.881C14.157 16.0372 14.157 16.2905 14.0008 16.4467L10.8875 19.5601C10.6792 19.7684 10.6792 20.106 10.8875 20.3143L12.0132 21.4401C12.2215 21.6484 12.5592 21.6484 12.7675 21.4401L15.8808 18.3267C16.037 18.1705 16.2903 18.1705 16.4465 18.3267L19.5599 21.4401C19.7682 21.6484 20.1059 21.6484 20.3141 21.4401L21.4399 20.3143C21.6482 20.106 21.6482 19.7684 21.4399 19.5601L18.0451 16.1652C18.0442 16.1644 18.043 16.1639 18.0417 16.1639Z" fill="#DC3545"/></g><defs><clipPath id="clip0_781_2971"><rect width="26.6667" height="26.6667" fill="white" transform="translate(2.6665 2.66669)"/></clipPath></defs></svg>`;
+            }
+
+            toast.innerHTML = `
+                <div class="toast-icon-wrapper">${iconSvg}</div>
+                <div class="toast-content-wrapper">
+                    <h5 class="toast-title">${title}</h5>
+                    <p class="toast-desc">${description}</p>
+                </div>
+                <div class="toast-progress-bar" style="background: ${progressColor};"></div>
+            `;
+
+            container.appendChild(toast);
+
+            // Trigger Slide In animation
+            setTimeout(() => toast.classList.add('show'), 50);
+
+            // Khởi tạo chạy lùi Progress Bar dưới đáy
+            const duration = 3000;
+            const start = Date.now();
+            const progressBar = toast.querySelector('.toast-progress-bar');
+
+            const timer = setInterval(() => {
+                const timePassed = Date.now() - start;
+                const progress = 100 - (timePassed / duration) * 100;
+                
+                if (progress <= 0) {
+                    clearInterval(timer);
+                    progressBar.style.width = '0%';
+                } else {
+                    progressBar.style.width = `${progress}%`;
+                }
+            }, 10);
+
+            // Auto Close & Destroy
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    clearInterval(timer);
+                    toast.remove();
+                }, 300);
+            }, duration);
+        },
+
+        // ── HÀM XỬ LÝ LƯU HOẶC XÓA DATA KHI CLICK CONFIRM ──
+        handleMemberConfirm: function() {
+            if (this.selectedMemberIds.length === 0) {
+                this.showToastNotification('warning', 'Warning', 'Please select at least one member.');
+                return;
+            }
+            if (this.currentMemberTab === 'assign' && this.selectedRoles.length === 0) {
+                this.showToastNotification('warning', 'Warning', 'Please select at least one role.');
+                return;
+            }
+
+            const totalSelected = this.selectedMemberIds.length;
+
+            if (this.currentMemberTab === 'assign') {
+                // Logic Xử lý gán thêm Role (Thêm Role mới, giữ nguyên thành viên cũ)
+                this.selectedMemberIds.forEach(memberId => {
+                    const member = this.allMembersData.find(m => m.id === memberId);
+                    if (member) {
+                        this.selectedRoles.forEach(role => {
+                            if (!member.selectedRoles.includes(role)) {
+                                member.selectedRoles.push(role);
+                            }
+                        });
+                    }
+                });
+
+                // Gọi Toast thông báo Thành công màu Xanh lá
+                this.showToastNotification(
+                    'success',
+                    'Success notification',
+                    `Successfully assigned ${totalSelected} member${totalSelected > 1 ? 's' : ''} to the contracts.`
+                );
+
+            } else if (this.currentMemberTab === 'remove') {
+                // THAY ĐỔI QUAN TRỌNG: Logic xóa triệt để thành viên khỏi mảng lưu trữ 'allMembersData'
+                this.allMembersData = this.allMembersData.filter(member => !this.selectedMemberIds.includes(member.id));
+
+                // Reset danh sách ID đang được chọn về rỗng để tránh lỗi dữ liệu cũ ở phiên sau
+                this.selectedMemberIds = [];
+
+                // Re-render lại view bảng dữ liệu để đồng bộ UI lập tức xóa các row
+                this.renderMembersData();
+
+                // Gọi Toast thông báo Xóa màu Đỏ đậm
+                this.showToastNotification(
+                    'remove',
+                    'Remove notification',
+                    `Successfully removed ${totalSelected} member${totalSelected > 1 ? 's' : ''} from the list.`
+                );
+            }
+
+            // Đóng sidebar popup
+            this.closePopup();
+        },
+
         closePopup: function() {
             const overlay = document.getElementById('popup-overlay');
             const sidePopup = document.getElementById('contract-overview-sidebar');
-            
             if (overlay) overlay.classList.remove('open');
             if (sidePopup) sidePopup.classList.remove('open');
 
-            // Giải phóng bộ nhớ của Chart cũ khi đóng popup
             if (this.activeChartInstance) {
                 this.activeChartInstance.destroy();
                 this.activeChartInstance = null;

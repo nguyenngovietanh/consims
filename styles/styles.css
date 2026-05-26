@@ -88,3 +88,172 @@
     from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* Tối ưu thiết kế cho Member List Sidebar */
+.member-tabs {
+    display: flex;
+    /* border-bottom: 2px solid #F1F5F9; */
+    margin-bottom: 16px;
+}
+.member-tab-item {
+    flex: 1;
+    text-align: center;
+    padding: 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748B;
+    border-bottom: 3px solid #1E2B5800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.member-tab-item.active {
+    color: #1E2B58;
+    border-bottom: 3px solid #1E2B58;
+    /* margin-bottom: -2px; */
+}
+.member-search-box {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.member-search-box input {
+    width: 100%;
+    padding: 10px 12px 10px 36px;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    font-size: 13.5px;
+    background: #F8FAFC;
+}
+.member-search-box ::placeholder {
+    color: #94A3B8;
+}
+.member-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94A3B8;
+}
+.role-pills-container {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+.role-pill {
+    padding: 6px 14px;
+    border: 1px solid #E2E8F0;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #94A3B8;
+    cursor: pointer;
+    background: #fff;
+    transition: all 0.2s;
+}
+.role-pill.active {
+    border-color: #1E2B58;
+    color: #1E2B58;
+    background: #F8FAFC;
+}
+.member-list-table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #EEF2F6;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1E2B58;
+    border-radius: 6px 6px 0 0;
+}
+.member-scroll-area {
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
+    border: 1px solid #E2E8F0;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+}
+.member-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    padding: 12px 8px;
+    border-bottom: 1px solid #F1F5F9;
+    transition: background 0.2s;
+}
+.member-item-row:hover {
+    background: #F8FAFC;
+}
+.member-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.member-info-meta h5 {
+    margin: 0;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #334155;
+}
+.member-info-meta p {
+    margin: 0;
+    font-size: 11px;
+    color: #94A3B8;
+}
+
+    .custom-toast-container {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .custom-toast-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.05), 0px 4px 6px -2px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        width: 340px;
+        padding: 16px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        transform: translateX(120%);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .custom-toast-card.show {
+        transform: translateX(0);
+    }
+    .toast-icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .toast-content-wrapper {
+        flex: 1;
+    }
+    .toast-title {
+        font-weight: 700;
+        font-size: 14px;
+        color: #1E293B;
+        margin: 0 0 2px 0;
+    }
+    .toast-desc {
+        font-size: 12px;
+        color: #64748B;
+        margin: 0;
+        line-height: 1.4;
+    }
+    .toast-progress-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        width: 100%;
+    }
