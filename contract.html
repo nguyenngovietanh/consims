@@ -355,7 +355,7 @@
       top: 24px;
       right: -700px; /* Ban đầu giấu popup về phía bên phải (Độ rộng popup giả định là 400px) */
       bottom: 24px;
-      width: auto;
+      width: 600px;
       background-color: #ffffff;
       box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
       border-radius: 8px; /* Bo góc cho đẹp mắt, tùy chọn */
@@ -440,7 +440,6 @@
 
 .custom-popup-overlay.open {
     opacity: 1;
-    /* ĐẢM BẢO DÒNG NÀY: Khi mở lên thì phải bật lại chuột để nhận click outside */
     pointer-events: auto; 
 }
 
@@ -492,9 +491,9 @@
 }
 .card-section-title {
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 700;
     color: #1E2B58;
-    /* text-transform: uppercase; */
+    text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 0 0 16px 0;
 }
@@ -504,13 +503,10 @@
     width: 100%;
     border-collapse: collapse;
     display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
-.details-grid-table td {
-    width: 50%;
-    padding: 8px 0;
-    /* vertical-align: top; */
-    font-size: 12px;
-}
+
 .lbl {
     color: #64748b;
     font-weight: 600;
@@ -578,10 +574,10 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    transition: background 0.2s ease;
+    transition: background 0.3s ease;
 }
 .btn-primary-dark:hover {
-    background: #1e293b;
+    background: #37517a;
 }
 .side-popup-footer .arrow {
     font-size: 11px;
@@ -589,6 +585,9 @@
 
 .info-row {
   gap: 20px;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
 }
 
 </style>

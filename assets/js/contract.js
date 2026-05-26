@@ -422,6 +422,9 @@ window.ContractModule = (function() {
         },
 
         // ── HÀM MỞ POPUP CHUẨN (ĐÃ FIX CONTEXT & EVENT) ──
+        // ── HÀM MỞ POPUP CHUẨN (ĐÃ FIX TOÀN BỘ XUNG ĐỘT CÚ PHÁP & LOGIC) ──
+        activeChartInstance: null,
+
         openPopup: function(event, rowId) {
             if (event) {
                 event.stopPropagation();
@@ -455,6 +458,15 @@ window.ContractModule = (function() {
             const contractTitle = targetRow ? targetRow.name : `Chi tiết hợp đồng (#${rowId})`;
             const contractorName = targetRow ? targetRow.contractor : 'Đang cập nhật';
 
+            // Định nghĩa dữ liệu thật (Mockup data mẫu tương ứng cho từng row)
+            const contractData = {
+                id: rowId,
+                months: ['2/2026', '3/2026', '4/2026', '5/2026', '6/2026', '7/2026'],
+                plannedValues: [22, 38, 38, 48, 62, 42],   
+                performedValues: [45, 62, 60, 85, 85, 75]  
+            };
+
+            // Đổ dữ liệu HTML sạch vào sidebar 
             sidePopup.innerHTML = `
                 <div class="side-popup-header">
                     <h3 class="popup-title" style="color: #1E2B58; font-weight: 700;">${contractTitle}</h3>
@@ -466,7 +478,8 @@ window.ContractModule = (function() {
                 <div class="side-popup-body">
                     <div class="info-card" style="overflow: hidden;">
                         <h4 class="card-section-title">Contract performance</h4>
-                        <table class="details-grid-table">
+                        
+                        <div class="details-grid-table">
                             <div class="info-row flex justify-between w-full">
                                 <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">Contract type:</span> <span class="val">Sub contract</span></div>
                                 <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">Currency:</span> <span class="val">VND</span></div>
@@ -479,9 +492,11 @@ window.ContractModule = (function() {
                                 <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">Started:</span> <span class="val">2025-05-14</span></div>
                                 <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">Deadline:</span> <span class="val">2026-07-14</span></div>
                             </div>
-                        </table>
+                        </div>
+
                         <div style="height:1px;background:#f0f2f7;margin:12px 0;"></div>
-                        <table class="details-grid-table">
+                        
+                        <div class="details-grid-table">
                             <div class="info-row flex justify-between w-full">
                                 <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">CPI:</span> <span class="val">1.09</span></div>
                                 <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">CMI:</span> <span class="val">+100.000.000 VND</span></div>
@@ -498,15 +513,13 @@ window.ContractModule = (function() {
                                 <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">BCWS:</span> <span class="val">1.300.000.000 VND</span></div>
                                 <div style="width: 50%; height: 24px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap;"><span class="lbl">ETC:</span> <span class="val">276.146.789 VND</span></div>
                             </div>
-                        </table>
+                        </div>
                     </div>
 
-                    <div class="info-card">
-                        <h4 class="card-section-title">Planned vs Performed</h4>
-                        <div class="chart-placeholder">
-                            <div style="text-align:center; color:#a0aec0; padding: 40px 0; font-size:13px; border: 1px dashed #e2e8f0; border-radius:6px;">
-                                [ Biểu đồ đường xu hướng Planned Value vs Performed Value ]
-                            </div>
+                    <div class="chart-card info-card" style="margin-top: 20px; padding: 20px; background: #fff; border-radius: 8px;">
+                        <h4 class="card-section-title">PLANNED VS PERFORMED</h4>
+                        <div style="position: relative; height: 240px; width: 100%;">
+                            <canvas id="realContractChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -529,36 +542,130 @@ window.ContractModule = (function() {
 
             const self = this;
 
-            // Đóng khi click lớp phủ tối
-            overlay.onclick = function(e) {
-                e.stopPropagation();
-                self.closePopup();
-            };
-
-            // Đóng khi click nút Close X
+            // Xử lý đóng mở UI bằng CSS Classes
+            overlay.onclick = function(e) { e.stopPropagation(); self.closePopup(); };
             const closeBtn = document.getElementById('js-close-sidebar-btn');
-            if (closeBtn) {
-                closeBtn.onclick = function(e) {
-                    e.stopPropagation();
-                    self.closePopup();
-                };
-            }
-
-            // Chặn lan truyền click từ nội dung popup trắng ra ngoài
-            sidePopup.onclick = function(e) {
-                e.stopPropagation();
-            };
+            if (closeBtn) { closeBtn.onclick = function(e) { e.stopPropagation(); self.closePopup(); }; }
+            sidePopup.onclick = function(e) { e.stopPropagation(); };
 
             overlay.style.display = 'block';
             sidePopup.style.display = 'flex';
 
+            // Kích hoạt animation lướt
             setTimeout(() => {
                 overlay.classList.add('open');
                 sidePopup.classList.add('open');
-            }, 30);
+                
+                // QUAN TRỌNG: Vẽ biểu đồ khi phần tử canvas đã hiển thị hoàn toàn trên giao diện
+                self.renderRealChart(contractData);
+            }, 50);
         },
 
-        // ── HÀM ĐÓNG DUY NHẤT (ĐÃ GỠ TRÙNG LẶP & ĐỒNG BỘ HIỆU ỨNG TẮT OVERLAY) ──
+        // Định nghĩa hàm vẽ chart (Đã tích hợp toàn bộ config resize legend và nét đứt grid mượt mà)
+        renderRealChart: function(data) {
+            const chartCanvas = document.getElementById('realContractChart');
+            if (!chartCanvas) return;
+            const ctx = chartCanvas.getContext('2d');
+
+            if (this.activeChartInstance) {
+                this.activeChartInstance.destroy();
+            }
+
+            // Khởi tạo Chart.js kế thừa dữ liệu thật và áp dụng styling resize chuẩn UI
+            this.activeChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.months,
+                    datasets: [
+                        {
+                            label: 'Planned Value',
+                            data: data.plannedValues,
+                            borderColor: '#52c41a',
+                            backgroundColor: '#52c41a',
+                            tension: 0.4,
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            bottom: 3
+                        },
+                        {
+                            label: 'Performed Value',
+                            data: data.performedValues,
+                            borderColor: '#ff9c6e',
+                            backgroundColor: '#ff9c6e',
+                            tension: 0.4,
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            bottom: 3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            bottom: 10 
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 5,         // Thu nhỏ đường kính chấm tròn lại cho tinh tế
+                                boxHeight: 5,        // Giữ tỉ lệ tròn đều 7x7px
+                                usePointStyle: true, // Ép icon chú thích thành dạng chấm tròn
+                                pointStyle: 'circle',
+                                padding: 32,  
+                                marginBottom: 4,       // Tăng khoảng cách chiều ngang giữa các nhãn chú thích
+                                font: {
+                                    family: 'Nunito Sans, sans-serif', 
+                                    size: 12,        
+                                    weight: '500'
+                                },
+                                color: '#64748B'     
+                            }
+                        },
+                        tooltip: {
+                            cornerRadius: 6,
+                            padding: 10
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 100, 
+                            ticks: { 
+                                stepSize: 20, 
+                                color: '#94A3B8',
+                                font: { size: 11 }
+                            },
+                            grid: { 
+                                color: '#F1F5F9', 
+                                drawTicks: false   
+                            },
+                            border: {
+                                dash: [5, 5],      // Biến các đường Grid ngang thành nét đứt thanh mảnh
+                                display: false     
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#94A3B8',
+                                font: { size: 11 }
+                            },
+                            grid: { 
+                                display: false 
+                            },
+                            border: {
+                                display: false 
+                            }
+                        }
+                    }
+                }
+            });
+        },
+
+        // ── HÀM ĐÓNG MODAL SIDEBAR (ĐÃ LỌC BỎ TRÙNG LẶP HÀM) ──
         closePopup: function() {
             const overlay = document.getElementById('popup-overlay');
             const sidePopup = document.getElementById('contract-overview-sidebar');
@@ -566,14 +673,15 @@ window.ContractModule = (function() {
             if (overlay) overlay.classList.remove('open');
             if (sidePopup) sidePopup.classList.remove('open');
 
-            // Chờ 350ms chạy hết hiệu ứng lướt CSS transition mới cho ẩn hẳn DOM display
+            // Giải phóng bộ nhớ của Chart cũ khi đóng popup
+            if (this.activeChartInstance) {
+                this.activeChartInstance.destroy();
+                this.activeChartInstance = null;
+            }
+
             setTimeout(() => {
-                if (overlay && !overlay.classList.contains('open')) {
-                    overlay.style.display = 'none';
-                }
-                if (sidePopup && !sidePopup.classList.contains('open')) {
-                    sidePopup.style.display = 'none';
-                }
+                if (overlay && !overlay.classList.contains('open')) overlay.style.display = 'none';
+                if (sidePopup && !sidePopup.classList.contains('open')) sidePopup.style.display = 'none';
             }, 350);
         }
     };

@@ -43,10 +43,3 @@
 .details-grid-table .info-row div:last-child {
     text-align: right; /* Thêm đường viền giữa 2 cột */
 }
-
-.details-grid-table div {
-    display: table-cell !important;
-    padding: 8px 0 !important; /* Điều chỉnh padding để căn chỉnh tốt hơn */
-    vertical-align: top;
-    width: 50%; /* Vì cấu trúc render JS của bạn là chia đôi (2 cột) */
-}
